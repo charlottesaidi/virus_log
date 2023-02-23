@@ -1,0 +1,112 @@
+body {
+  background-color: $dark-bg;
+  font-family: 'Ubuntu', sans-serif;
+  color: $white;
+  font-size: 16px;
+  font-weight: 400;
+  min-height: 100vh;
+
+  a {
+    text-decoration: none;
+  }
+
+  .w-40 {
+    width: 40%;
+  }
+
+  .w-50 {
+    width: 50%;
+  }
+
+  .w-60 {
+    width: 60%;
+  }
+
+  .w-80 {
+    width: 80%;
+  }
+
+  .form_page {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card {
+    margin: 2rem auto;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px 0 rgba(#000, .25);
+    padding: 2rem .75rem;
+  }
+
+  .card-heading {
+    text-align: center;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: $primary;
+    line-height: 1.222;
+    padding: 1rem 0
+  }
+
+  .card-info {
+    padding: 1rem 1rem;
+    text-align: center;
+    font-size: .875rem;
+    color: $dark-grey;
+
+    a {
+      display: block;
+      color: $primary;
+      text-decoration: none;
+    }
+  }
+
+  .card-error {
+    padding: 1rem 0;
+    text-align: center;
+    color: $danger;
+    font-size: 1.5rem;
+  }
+
+  .card-success {
+    padding: 1rem 0;
+    text-align: center;
+    color: $success;
+    font-size: 1.5rem;
+  }
+
+  .layout_horizontal {
+    display: flex
+  }
+
+  .home {
+    padding: 3rem 2rem
+  }
+
+  .title {
+    text-transform: uppercase;
+    letter-spacing: .5em;
+    display: inline-block;
+    border: 4px double rgba(255,255,255,.25);
+    border-width: 4px 0;
+    padding: 1.5em 0em;
+    margin: 5rem auto 0 auto;
+
+    h1 {
+      font: 700 2em/1 "Oswald", sans-serif;
+      letter-spacing: 0;
+      padding: .25em 0 .325em;
+      display: block;
+      margin: 0 auto;
+    }
+  }
+
+  small {
+    font-size: 1rem;
+  }
+
+  .text-center {
+    text-align: center;
+  }
+}
