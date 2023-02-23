@@ -40,15 +40,28 @@ class TransactionRepository extends ServiceEntityRepository
         }
     }
 
-    public function findLastOneByIpAndStatus($ip, $statuses): ?Transaction
+    public function findLastOneByUserAndStatus($user, $statuses): ?Transaction
     {
         return $this->createQueryBuilder('t')
-            ->andWhere('t.ip = :ip')
+            ->andWhere('t.user = :user')
             ->andWhere('t.paymentStatus IN (:statuses)')
-            ->setParameters(['ip' => $ip, 'statuses' => $statuses])
+            ->setParameters(['user' => $user, 'statuses' => $statuses])
             ->getQuery()
             ->getOneOrNullResult()
         ;
+    }
+
+    public function findAllLastTransactions($limit = null): array
+    {
+        $query = $this->createQueryBuilder('t')
+            ->orderBy('t.id', 'DESC');
+
+        if($limit) {
+            $query->setMaxResults($limit);
+        }
+
+        return $query->getQuery()
+            ->getResult();
     }
 
 //    /**

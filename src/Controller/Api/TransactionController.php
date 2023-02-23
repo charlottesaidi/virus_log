@@ -8,7 +8,6 @@ use App\Repository\TransactionRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @Route("/api")
@@ -26,19 +25,19 @@ class TransactionController extends BaseController
      */
     public function stripeCreate(Request $request): Response
     {
-        $ip = $request->getClientIp();
+        $user = $this->getUser();
 
         // Récupération de la transaction en cours s'il y en a une
-        $transaction = $this->transactionRepository->findLastOneByIpAndStatus(
-            $ip,
+        $transaction = $this->transactionRepository->findLastOneByUserAndStatus(
+            $user,
             [Transaction::TRANSACTION_STATUS_PAYMENT_INTENT]
         );
 
         if (null === $transaction) {
             $transaction = (new Transaction())
                 ->setAmount(100)
-                ->setIp($ip)
-                ->setLabel('Paiement en cours depuis '.$ip)
+                ->setUser($user)
+                ->setLabel('Paiement en cours depuis '.$user->getIp())
                 ->setPaymentStatus(Transaction::TRANSACTION_STATUS_PAYMENT_INTENT);
         }
 
@@ -72,7 +71,7 @@ class TransactionController extends BaseController
             ];
 
             return $this->json($output);
-        } catch (Error $e) {
+        } catch (\Error $e) {
             http_response_code(500);
 
             return $this->json(['error' => $e->getMessage()]);
@@ -84,15 +83,15 @@ class TransactionController extends BaseController
      */
     public function paymentSuccess(Request $request): Response
     {
-        $ip = $request->getClientIp();
+        $user = $this->getUser();
 
         $payment_method_id = $request->get('pm');
 
         \Stripe\Stripe::setApiKey($this->getParameter('app.stripe.keys.private'));
 
         // Récupération de la transaction en cours s'il y en a une
-        $transaction = $this->transactionRepository->findLastOneByIpAndStatus(
-            $ip,
+        $transaction = $this->transactionRepository->findLastOneByUserAndStatus(
+            $user,
             [Transaction::TRANSACTION_STATUS_PAYMENT_INTENT]
         );
 
@@ -102,7 +101,7 @@ class TransactionController extends BaseController
 
         try {
             $transaction->setPaymentStatus(Transaction::TRANSACTION_STATUS_PAYMENT_SUCCESS);
-            $transaction->setLabel('Paiement depuis '.$ip);
+            $transaction->setLabel('Paiement depuis '.$user->getIp());
 
             $payment_method = \Stripe\PaymentMethod::retrieve($payment_method_id);
 
@@ -127,7 +126,7 @@ class TransactionController extends BaseController
                 'success' => true,
                 'message' => 'Paiement effectué... Merci ! ;)'
             ]);
-        } catch (Error $e) {
+        } catch (\Error $e) {
             http_response_code(500);
             return $this->json(['error' => $e->getMessage()]);
         }

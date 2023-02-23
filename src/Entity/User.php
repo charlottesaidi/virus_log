@@ -24,6 +24,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, DatedIn
     use IdTrait;
 
     /**
+     * @ORM\Column(length=255, nullable=true)
+     */
+    private $ip = null;
+
+    /**
      * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\NotBlank(message="L'adresse email de l'utilisateur est obligatoire")
      * @Assert\Email(message="Le format de l'adresse email doit être valide")
@@ -43,6 +48,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, DatedIn
 
     public function __construct() {
         $this->createdAt = new \DateTime();
+    }
+
+    public function getIp(): ?string
+    {
+        return $this->ip;
+    }
+
+    public function setIp(?string $ip): self
+    {
+        $this->ip = $ip;
+
+        return $this;
     }
 
     public function getEmail(): ?string

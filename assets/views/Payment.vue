@@ -1,7 +1,7 @@
 <template>
     <div class="form_page">
         <div class="title">
-            <h1 class="text-center">
+            <h1 class="title-label large text-center">
                 Thank you pour les sous ! <br/>
                 <small v-if="transaction">Il nous faut {{ transaction.amount }} €</small>
             </h1>
@@ -34,13 +34,13 @@ import {env} from "../env";
 import Loader from "../components/Loader.vue";
 import {localeToCountryCode} from "../core/services/utils/string";
 import HttpRequest from "../core/services/http/HttpRequest";
-import {isTokenExpired} from "../core/services/utils/auth";
+import {isLogged, isTokenExpired} from "../core/services/utils/auth";
 
 export default defineComponent({
     name: 'Home',
     data() {
         return {
-            token: '',
+            token: isLogged(),
             isLoading: true,
             isSubmitted: false,
             transaction: null,
@@ -60,8 +60,6 @@ export default defineComponent({
         Loader
     },
     created() {
-        this.token = sessionStorage.getItem('token') ?? null;
-
         if(this.token) {
             isTokenExpired(this.token);
         }

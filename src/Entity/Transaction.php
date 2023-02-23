@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Repository\TransactionRepository;
+use App\Entity\User;
 use App\Entity\Common\DatedInterface;
 use App\Entity\Common\DatedTrait;
 use App\Entity\Common\IdInterface;
@@ -24,9 +24,10 @@ class Transaction implements DatedInterface, IdInterface
     public const TRANSACTION_STATUS_PAYMENT_ABANDONED = 'payment_abandoned';
 
     /**
-     * @ORM\Column(length=255, nullable=true)
+     * @ORM\ManyToOne(targetEntity=User::class)
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $ip = null;
+    private $user;
 
     /**
      * @ORM\Column(length=255, nullable=true)
@@ -64,14 +65,20 @@ class Transaction implements DatedInterface, IdInterface
         $this->createdAt = new \DateTime();
     }
 
-    public function getIp(): ?string
+    /**
+     * @return mixed
+     */
+    public function getUser()
     {
-        return $this->ip;
+        return $this->user;
     }
 
-    public function setIp(?string $ip): self
+    /**
+     * @param mixed $user
+     */
+    public function setUser($user): self
     {
-        $this->ip = $ip;
+        $this->user = $user;
 
         return $this;
     }
