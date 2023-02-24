@@ -16,11 +16,19 @@
                 </div>
                 <div class="grid">
                     <stat-card v-if="infectedFiles.length > 0">
-                        <p v-for="log in infectedFiles" class="paragraphe small">
-                            <span class="text-amber">{{ moment(log.createdAt).format("L HH:mm") }}</span>&nbsp;-&nbsp;
-                            <span class="text-danger">{{ log.numberInfectedFile }}</span>&nbsp;fichiers&nbsp;infectés,&nbsp;ip:&nbsp;
-                            <span class="text-success">{{ log.ip }}</span>
-                        </p>
+                        <table>
+                            <tr v-for="log in infectedFiles" class="paragraphe small">
+                                <td>
+                                    <span class="text-amber">{{ moment(log.createdAt).format("L HH:mm") }}</span>&nbsp;-&nbsp;
+                                </td>
+                                <td>
+                                    <span class="text-danger">{{ log.numberInfectedFile }}</span>&nbsp;fichiers&nbsp;infectés
+                                </td>
+                                <td>
+                                    &nbsp;&nbsp;ip:&nbsp;<span class="text-success">{{ log.ip }}</span>
+                                </td>
+                            </tr>
+                        </table>
                     </stat-card>
                     <stat-card v-if="payments.length > 0">
                         <table>
@@ -32,7 +40,7 @@
                                     paiement de <span class="text-danger">{{ log.amount }}&nbsp;€</span>
                                 </td>
                                 <td>
-                                    ip:&nbsp;<span class="text-success">{{ log.user.ip }}</span>
+                                    &nbsp;&nbsp;ip:&nbsp;<span class="text-success">{{ log.user.ip }}</span>
                                 </td>
                                 <td>
                                     <p v-if="log.paymentStatus === 'payment_success'">
