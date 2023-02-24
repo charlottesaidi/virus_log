@@ -51,10 +51,12 @@ class TransactionRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findAllLastTransactions($limit = null): array
+    public function findAllLastPaidTransactions($limit = null): array
     {
         $query = $this->createQueryBuilder('t')
-            ->orderBy('t.id', 'DESC');
+            ->orderBy('t.id', 'DESC')
+            ->where('t.paymentStatus IN (:statuses)')
+            ->setParameter('statuses', [Transaction::TRANSACTION_STATUS_PAYMENT_SUCCESS, Transaction::TRANSACTION_USER_FILE_DECRYPTED]);
 
         if($limit) {
             $query->setMaxResults($limit);

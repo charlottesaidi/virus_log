@@ -20,6 +20,7 @@ class Transaction implements DatedInterface, IdInterface
 
     public const TRANSACTION_STATUS_PAYMENT_INTENT = 'payment_intent';
     public const TRANSACTION_STATUS_PAYMENT_SUCCESS = 'payment_success';
+    public const TRANSACTION_USER_FILE_DECRYPTED = 'files_decrypted';
     public const TRANSACTION_STATUS_PAYMENT_FAILURE = 'payment_failure';
     public const TRANSACTION_STATUS_PAYMENT_ABANDONED = 'payment_abandoned';
 

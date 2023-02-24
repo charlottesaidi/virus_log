@@ -35,6 +35,20 @@ body {
     flex-direction: column;
   }
 
+  .flash-success {
+    padding: .8rem 2rem;
+    font-weight: 500;
+    background-color: $success-transparent;
+    color: $white;
+    border: none;
+    border-left: 2px solid $success;
+    transition: opacity .3s;
+    margin: 0.2rem 0;
+    &.dashboard {
+      margin-left: 1rem
+    }
+  }
+
   .card {
     margin: 2rem auto;
     display: flex;
@@ -91,7 +105,8 @@ body {
   }
 
   .home {
-    padding: 3rem 2rem
+    padding: 0 2rem;
+    width: 100%
   }
 
   .title {
@@ -111,26 +126,57 @@ body {
       padding: .25em 0 .325em;
       display: block;
       margin: 0 auto;
-      &.large {
-        font-size: 2em/1;
-        font-weight: 700;
-      }
-      &.medium {
-        font-size: 1rem;
-      }
-      &.small {
-        font-size: 0.8rem;
-        text-transform: lowercase;
-        letter-spacing: .1em;
-      }
-      .paragraphe {
-        line-height: 1.5;
-      }
     }
   }
 
-  small {
-    font-size: 1rem;
+  .paragraphe {
+    line-height: 1.5;
+  }
+
+  .action-button {
+    font: inherit;
+    padding: .8rem 2rem;
+    width: 100%;
+    font-weight: 500;
+    background-color: $primary-transparent;
+    color: $white;
+    border: none;
+    border-left: 2px solid $primary;
+    cursor: pointer;
+    transition: opacity .3s;
+    &:focus {
+      outline: 0;
+    }
+    &:hover {
+      opacity: .8;
+    }
+    &.payment {
+      width: auto;
+      margin: 1rem auto;
+    }
+    &.dashboard {
+      margin: 0 0 0 1rem;
+      width: auto;
+    }
+  }
+
+  .btn-small {
+    padding: .5rem 1rem
+  }
+
+  .large {
+    font-size: 2em;
+    font-weight: 700;
+  }
+  .medium {
+    font-size: 0.9rem;
+    text-transform: initial;
+  }
+
+  small, .small {
+    font-size: 0.8rem;
+    text-transform: lowercase;
+    letter-spacing: .1em;
   }
 
   .text-center {
@@ -150,10 +196,15 @@ body {
   }
 
   .grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(1, 1fr);
-    grid-column-gap: 10px;
-    grid-row-gap: 10px;
+    display: flex;
+    gap: 10px;
+  }
+
+  .align-center {
+    align-items: center;
+  }
+
+  .justify-between {
+    justify-content: space-between;
   }
 }

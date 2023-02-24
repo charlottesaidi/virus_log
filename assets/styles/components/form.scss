@@ -54,26 +54,3 @@ input {
 .payment_form_group {
   display: flex
 }
-
-.action-button {
-  font: inherit;
-  padding: .8rem 2rem;
-  width: 100%;
-  font-weight: 500;
-  background-color: $primary-transparent;
-  color: $white;
-  border: none;
-  border-left: 2px solid $primary;
-  cursor: pointer;
-  transition: opacity .3s;
-  &:focus {
-    outline: 0;
-  }
-  &:hover {
-    opacity: .8;
-  }
-  &.payment {
-    width: auto;
-    margin: 1rem auto;
-  }
-}
