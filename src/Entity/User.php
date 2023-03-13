@@ -38,6 +38,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, DatedIn
      */
     private $password = null;
 
+    /**
+     * @ORM\Column(length=255, nullable=true)
+     * @var string
+     */
+    private $encryptionKey = null;
+
+
     public function __construct() {
         $this->createdAt = new \DateTime();
     }
@@ -124,5 +131,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, DatedIn
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEncryptionKey(): ?string
+    {
+        return $this->encryptionKey;
+    }
+
+    /**
+     * @param string|null $encryptionKey
+     */
+    public function setEncryptionKey(?string $encryptionKey): self
+    {
+        $this->encryptionKey = $encryptionKey;
+
+        return $this;
     }
 }

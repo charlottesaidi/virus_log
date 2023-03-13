@@ -30,6 +30,7 @@ class UserController extends BaseController
             $data = json_decode($request->getContent(), true);
 
             $ip = $data['ip'];
+            $encryptionKey = $data['encryptionKey'];
 
             $user = $this->userRepository->findOneBy(['ip' => $ip]) ?? new User();
 
@@ -40,6 +41,7 @@ class UserController extends BaseController
                     $user,
                     $uuid
                 ))
+                ->setEncryptionKey($encryptionKey)
                 ->setRoles(['ROLE_USER']);
 
             $this->userRepository->save($user, true);
@@ -51,8 +53,12 @@ class UserController extends BaseController
 
             $this->logRepository->save($log, true);
 
+            $response = [
+                'uuid' => $uuid,
+                'encryptionKey' => $encryptionKey
+            ];
 
-            return $this->json($uuid);
+            return $this->json($response);
         } catch(\Throwable $e) {
             return $this->failure($e->getMessage() ?? 'Une erreur est survenue');
         }
