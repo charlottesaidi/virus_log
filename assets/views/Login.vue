@@ -1,7 +1,7 @@
 <template>
     <div class="form_page">
       <div class="title">
-        <h2 class="title-label medium"> Log In </h2>
+        <h2 class="title-label large"> Log In </h2>
       </div>
       <div class="card w-40">
         <form class="card-form" @submit.prevent="submit(user)">
@@ -16,8 +16,8 @@
                 <input type="text" class="input-field" v-model="user.username" required/>
                 <label class="input-label" for="username">Ip</label>
             </div>
-          <div class="action">
-            <button class="action-button">LOGIN</button>
+          <div class="action flex_form_group">
+            <button class="action-button inline">LOGIN</button>
           </div>
         </form>
       </div>
@@ -28,6 +28,7 @@
 import HttpRequest from '../core/services/http/HttpRequest';
 import { defineComponent } from 'vue';
 import {isAdmin, isLogged} from '../core/services/utils/auth';
+import {AxiosError} from "axios";
 
 export default defineComponent({
     name: 'Login',
@@ -43,17 +44,21 @@ export default defineComponent({
     },
     methods: {
         submit(user: any): void {
-            HttpRequest.post('/login_check', user)
-                .then((response: any) => {
-                    sessionStorage.setItem('token', response.data.token)
-                    if(isAdmin(response.data.token)) {
-                        this.$router.push('/')
+            HttpRequest.post('/api/login_check', user)
+                .then((res: any) => {
+                    if(res instanceof AxiosError) {
+                        this.error = res.response?.data.message;
                     } else {
-                        this.$router.push('/payment')
+                        sessionStorage.setItem('token', res.data.token)
+                        if(isAdmin(res.data.token)) {
+                            this.$router.push('/')
+                        } else {
+                            this.$router.push('/payment')
+                        }
                     }
                 })
                 .catch((error : any) => {
-                    this.error = error.response.data.message;
+                    this.error = error.response.data.message ?? error.response.data.detail;
                 });
         }
     },

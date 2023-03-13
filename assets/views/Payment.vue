@@ -22,8 +22,8 @@
                 <div id="payment-element">
                     <!-- Stripe injecte l'élément de formulaire ici -->
                 </div>
-                <div class="payment_form_group">
-                    <button class="action-button payment" type="submit">Pay</button>
+                <div class="flex_form_group">
+                    <button class="action-button inline" type="submit">Pay</button>
                 </div>
             </form>
         </div>
@@ -36,13 +36,12 @@ import {env} from "../env";
 import Loader from "../components/Loader.vue";
 import {localeToCountryCode} from "../core/services/utils/string";
 import HttpRequest from "../core/services/http/HttpRequest";
-import {isLogged, isTokenExpired} from "../core/services/utils/auth";
 
 export default defineComponent({
     name: 'Home',
     data() {
         return {
-            token: isLogged(),
+            token: sessionStorage.getItem('decryptId'),
             isLoading: true,
             isSubmitted: false,
             transaction: null,
@@ -62,15 +61,11 @@ export default defineComponent({
         Loader
     },
     created() {
-        if(this.token) {
-            isTokenExpired(this.token);
-        }
-
         if (this.token === null) {
-            this.$router.push('/login')
+            this.$router.push('/signin')
         }
 
-        HttpRequest.get('stripe_create', this.token).then(response => {
+        HttpRequest.get('stripe_create?decryptId='+this.token, null).then(response => {
             this.stripe = Stripe(env.STRIPE_PUBLIC_KEY);
 
             const options = {
@@ -93,7 +88,7 @@ export default defineComponent({
             paymentElement.mount('#payment-element');
             this.transaction = response.data.transaction
         }).catch(error => {
-            this.message.error = error.response.data.message
+            this.message.error = error.response.data.message ?? error.response.data.detail
         })
     },
     methods: {
@@ -117,10 +112,10 @@ export default defineComponent({
             });
 
             if (error === undefined) {
-                HttpRequest.get('payment_success?pm=' + paymentIntent.payment_method, this.token).then((res) => {
+                HttpRequest.get('payment_success?pm=' + paymentIntent.payment_method + '&decryptId='+this.token, null).then((res) => {
                     this.message.success = res.data.message
                 }).catch((err) => {
-                    this.message.error = err.response.data.message
+                    this.message.error = err.response.data.message ?? err.response.data.detail
                 })
                 this.isSubmitted = false;
             } else {

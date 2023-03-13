@@ -27,27 +27,50 @@ body {
     width: 80%;
   }
 
+  .mt-1 {
+    margin-top: 1rem
+  }
+
+  .mt-2 {
+    margin-top: 2rem
+  }
+
+  .pt-1 {
+    padding-top: 1rem
+  }
+
+  .pt-2 {
+    padding-top: 2rem
+  }
+
   .h-full {
     height: 100%;
   }
 
-  .form_page {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .flash-success {
-    padding: .8rem 2rem;
+  .flash {
+    padding: .8rem 2rem !important;
     font-weight: 500;
     background-color: $success-transparent;
     color: $white;
     border: none;
-    border-left: 2px solid $success;
     transition: opacity .3s;
     margin: 0.2rem 0;
     &.dashboard {
       margin-left: 1rem
     }
+    &.flash--success {
+      background-color: $success-transparent;
+      border-left: 2px solid $success;
+    }
+    &.flash--danger {
+      background-color: $danger-transparent;
+      border-left: 2px solid $danger;
+    }
+  }
+
+  .form_page {
+    display: flex;
+    flex-direction: column;
   }
 
   .card {
@@ -121,12 +144,16 @@ body {
     &.m-0 {
       margin: 0 auto;
     }
+    &.title--caption {
+      margin: 1rem auto 0 auto;
+    }
     .title-label {
       font-family: "Oswald", sans-serif;
       letter-spacing: 0;
       padding: .25em 0 .325em;
       display: block;
       margin: 0 auto;
+      line-height: 1.2;
     }
   }
 
@@ -151,7 +178,7 @@ body {
     &:hover {
       opacity: .8;
     }
-    &.payment {
+    &.inline {
       width: auto;
       margin: 1rem auto;
     }
@@ -166,7 +193,7 @@ body {
   }
 
   .large {
-    font-size: 2em;
+    font-size: 1.5em;
     font-weight: 700;
   }
   .medium {

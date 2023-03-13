@@ -31,11 +31,12 @@ class LogController extends BaseController
             $this->denyAccessUnlessGranted('ROLE_ADMIN');
             $transactions = $this->transactionRepository->findAllLastPaidTransactions(30);
             $logs = $this->logRepository->findAllLastLogs(30);
+            $totalAmount = $this->transactionRepository->countAllTransactionAmount();
 
-            dd($this->transactionRepository->countAllTransactionAmount());
 
             return $this->json([
                 'transactions' => $transactions,
+                'totalAmount' => $totalAmount,
                 'logs' => $logs,
                 'infectedTerminals' => count($logs)
             ]);
