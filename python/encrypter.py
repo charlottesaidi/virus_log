@@ -2,18 +2,19 @@ from cryptography.fernet import Fernet
 import os
 
 class KeyGenerator:
-    def getKey(self):
-        with open("filekey.key", "rb") as filekey:
-            return filekey.read()
+    # def getKey(self):
+    #     with open("filekey.key", "rb") as filekey:
+    #         return filekey.read()
         
     def generateKey(self):
-        key = self.getKey()
-        if key == None:
-            encryptionKey = Fernet.generate_key()
-            with open("filekey.key", "wb") as filekey:
-                filekey.write(encryptionKey)
-        else:
-            return key
+        # key = self.getKey()
+        # if key == None:
+        return Fernet.generate_key()
+            # encryptionKey = Fernet.generate_key()
+            # with open("filekey.key", "wb") as filekey:
+                # filekey.write(encryptionKey)
+        # else:
+            # return key
 
 class Encrypter:
     _fernet = ""
