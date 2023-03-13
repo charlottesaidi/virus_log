@@ -13,15 +13,15 @@ class UserFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        $cha = $this->saveUser('127.0.0.1', '!', ["ROLE_ADMIN"]);
+        $cha = $this->saveUser('127.0.0.1', '!', ["ROLE_ADMIN"], 'decrypt_id');
         $manager->persist($cha);
-        $hacked = $this->saveUser('158.242.1.128', '!', ['ROLE_USER']);
+        $hacked = $this->saveUser('158.242.1.128', '!', ['ROLE_USER'], 'decrypt_id');
         $manager->persist($hacked);
 
         $manager->flush();
     }
 
-    private function saveUser(string $username, string $password, array $roles): User
+    private function saveUser(string $username, string $password, array $roles, string $decryptId): User
     {
         $user = new User();
 
@@ -30,7 +30,9 @@ class UserFixtures extends Fixture
                 $user,
                 $password
             ))
-            ->setRoles($roles);
+            ->setMacAddress($username)
+            ->setRoles($roles)
+            ->setDecryptId($decryptId);
 
         return $user;
     }

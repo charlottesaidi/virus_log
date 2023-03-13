@@ -61,9 +61,9 @@ class UserController extends BaseController
     }
 
     /**
-     * @Route('/login')
+     * @Route('/login-to-pay')
      */
-    public function login(): Response
+    public function loginToPay(Request $request): Response
     {
         try {
             $data = json_decode($request->getContent(), true);

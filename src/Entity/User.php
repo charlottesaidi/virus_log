@@ -50,7 +50,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, DatedIn
     private $macAddress;
 
     /**
-     * @ORM\Column(length=255)
+     * @ORM\Column(length=255, nullable=true)
      */
     private $email;
 
