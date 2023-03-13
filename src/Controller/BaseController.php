@@ -27,7 +27,7 @@ class BaseController extends AbstractController
     protected function getUser(): User
     {
         $decodedToken = $this->getJWTTokenManagerInterface()->decode($this->getTokenStorageInterface()->getToken());
-        return $this->getManagerRegistry()->getRepository(User::class)->findOneBy(['email' => $decodedToken['username']]);
+        return $this->getManagerRegistry()->getRepository(User::class)->findOneBy(['ip' => $decodedToken['username']]);
     }
 
     protected function getTokenStorageInterface(): TokenStorageInterface
