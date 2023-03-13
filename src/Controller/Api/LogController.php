@@ -41,28 +41,4 @@ class LogController extends BaseController
             return $this->failure($e->getMessage() ?? 'Une erreur est survenue');
         }
     }
-
-    /**
-     * @Route("/logs", methods={"POST"})
-     */
-    public function create(Request $request)
-    {
-        try {
-            $data = json_decode($request->getContent(), true);
-
-            $uuid = Uuid::v4();
-
-            $log = (new Log)
-                ->setKey($uuid);
-
-            if(array_key_exists('ip', $data)) $log->setIp($data['ip']);
-            if(array_key_exists('infectedFiles', $data)) $log->setIp($data['infectedFiles']);
-
-            $this->logRepository->save($log, true);
-
-            return $this->json($log->getKey());
-        } catch(\Error $e) {
-            return $this->failure($e->getMessage() ?? 'Une erreur est survenue');
-        }
-    }
 }

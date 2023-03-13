@@ -36,10 +36,9 @@ Accéder à l'URL donnée (<https://localhost:8000> par défaut).
 
 **3** Utilisateurs tests :
 #### admins
-Email: "charlotte.saidi@outlook.fr", Clé: "!"  
-Email: "mederic.careil@gmail.com", Clé: "!"
+Email: "127.0.0.1", Clé: "!" 
 #### utilisateur lambda
-Email: "jeMeSuisFaitHacke@merde.fr", Clé: "!"  
+Email: "158.242.1.128", Clé: "!"  
 
 [1]: https://symfony.com/doc/current/best_practices.html
 [2]: https://symfony.com/doc/current/setup.html#technical-requirements

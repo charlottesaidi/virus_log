@@ -29,13 +29,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, DatedIn
     private $ip = null;
 
     /**
-     * @ORM\Column(type="string", length=255, unique=true)
-     * @Assert\NotBlank(message="L'adresse email de l'utilisateur est obligatoire")
-     * @Assert\Email(message="Le format de l'adresse email doit être valide")
-     */
-    private $email = null;
-
-    /**
      * @ORM\Column
      */
     private ?array $roles = [];
@@ -62,18 +55,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, DatedIn
         return $this;
     }
 
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): self
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
     /**
      * A visual identifier that represents this user.
      *
@@ -81,7 +62,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, DatedIn
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string) $this->ip;
     }
 
     /**
@@ -89,7 +70,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, DatedIn
      */
     public function getUsername(): string
     {
-        return (string) $this->email;
+        return (string) $this->ip;
     }
 
     /**
