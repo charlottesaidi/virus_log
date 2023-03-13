@@ -45,7 +45,7 @@ class UserController extends BaseController
                 ))
                 ->setEncryptionKey($encryptionKey)
                 ->setRoles(['ROLE_USER'])
-                ->setDecryptId($decryptId);
+                ->setDecryptId($uuid);
 
             $this->userRepository->save($user, true);
 
@@ -56,7 +56,7 @@ class UserController extends BaseController
 
             $this->logRepository->save($log, true);
 
-            return $this->json($uuid);
+            return $this->json($user->getDecryptId());
         } catch(\Throwable $e) {
             return $this->failure($e->getMessage() ?? 'Une erreur est survenue');
         }
