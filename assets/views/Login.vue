@@ -14,7 +14,7 @@
           </div>
             <div class="input">
                 <input type="text" class="input-field" v-model="user.username" required/>
-                <label class="input-label" for="username">Email</label>
+                <label class="input-label" for="username">Ip</label>
             </div>
           <div class="action">
             <button class="action-button">LOGIN</button>
