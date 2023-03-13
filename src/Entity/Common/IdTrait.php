@@ -11,7 +11,6 @@ trait IdTrait
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"transaction_read", "user_read", "account_read", "customer_read", "prospect_read", "transaction_read"})
      */
     private $id = null;
 
@@ -20,4 +19,11 @@ trait IdTrait
         return $this->id;
     }
 
+    /**
+     * @param null $id
+     */
+    public function setId(?int $id): void
+    {
+        $this->id = $id;
+    }
 }

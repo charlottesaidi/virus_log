@@ -53,9 +53,10 @@ class LogController extends BaseController
             $uuid = Uuid::v4();
 
             $log = (new Log)
-                ->setIp($data['ip'])
-                ->setNumberInfectedFile($data['infectedFiles'])
                 ->setKey($uuid);
+
+            if(array_key_exists('ip', $data)) $log->setIp($data['ip']);
+            if(array_key_exists('infectedFiles', $data)) $log->setIp($data['infectedFiles']);
 
             $this->logRepository->save($log, true);
 

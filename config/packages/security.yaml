@@ -40,8 +40,8 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/api/login_check, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api, roles: ROLE_USER }
-        - { path: ^/api/logs, roles: ROLE_ADMIN }
+#        - { path: ^/api/logs, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+#        - { path: ^/api, roles: ROLE_USER }
 
 when@test:
     security:
