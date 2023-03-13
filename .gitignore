@@ -8,6 +8,10 @@
 /public/bundles/
 /var/
 /vendor/
+/node_modules/
+/config/jwt/
+.idea
+/public/build/
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###
