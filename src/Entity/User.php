@@ -44,6 +44,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, DatedIn
      */
     private $encryptionKey = null;
 
+    /**
+     * @ORM\Column(length=255)
+     */
+    private $macAddress;
+
+    /**
+     * @ORM\Column(length=255)
+     */
+    private $email;
+
+    /**
+     * @ORM\Column(length=255)
+     */
+    private $decryptId;
 
     public function __construct() {
         $this->createdAt = new \DateTime();
@@ -149,5 +163,57 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, DatedIn
         $this->encryptionKey = $encryptionKey;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMacAddress()
+    {
+        return $this->macAddress;
+    }
+
+    /**
+     * @param mixed $macAddress
+     */
+    public function setMacAddress($macAddress): self
+    {
+        $this->macAddress = $macAddress;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param mixed $email
+     */
+    public function setEmail($email): self
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDecryptId()
+    {
+        return $this->decryptId;
+    }
+
+    /**
+     * @param mixed $decryptId
+     */
+    public function setDecryptId($decryptId): void
+    {
+        $this->decryptId = $decryptId;
     }
 }

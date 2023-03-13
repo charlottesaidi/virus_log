@@ -8,11 +8,20 @@
 
             <div v-else>
                 <div class="card paragraphe">
-                    <p class="text-center medium">
-                        terminaux&nbsp;infectés&nbsp;
-                    </p>
-                    <h1 class="text-danger text-center large">{{ infectedTerminals }}</h1>
-                    <p class="text-amber text-center small">{{ moment(new Date()).format("L HH:mm") }}</p>
+                    <div>
+                        <p class="text-center medium">
+                            Terminaux&nbsp;infectés&nbsp;
+                        </p>
+                        <h2 class="text-danger text-center large">{{ infectedTerminals }}</h2>
+                        <p class="text-amber text-center small">{{ moment(new Date()).format("L HH:mm") }}</p>
+                    </div>
+                    <div>
+                        <p class="text-center medium">
+                            Sous-sous dans les po-poches
+                        </p>
+                        <h2 class="text-danger text-center large">{{ infectedTerminals }}</h2>
+                        <p class="text-amber text-center small">{{ moment(new Date()).format("L HH:mm") }}</p>
+                    </div>
                 </div>
                 <div class="grid">
                     <stat-card v-if="infectedFiles.length > 0">

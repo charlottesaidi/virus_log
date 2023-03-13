@@ -32,6 +32,8 @@ class LogController extends BaseController
             $transactions = $this->transactionRepository->findAllLastPaidTransactions(30);
             $logs = $this->logRepository->findAllLastLogs(30);
 
+            dd($this->transactionRepository->countAllTransactionAmount());
+
             return $this->json([
                 'transactions' => $transactions,
                 'logs' => $logs,

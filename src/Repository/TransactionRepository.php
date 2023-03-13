@@ -66,6 +66,14 @@ class TransactionRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function countAllTransactionAmount()
+    {
+        return $query = $this->createQueryBuilder('t')
+            ->select('COALESCE(SUM(t.amount)/100, 0)')
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Transaction[] Returns an array of Transaction objects
 //     */
