@@ -27,12 +27,13 @@ class UserController extends BaseController
     public function register(Request $request): Response
     {
         try {
-            $user = new User();
-
             $data = json_decode($request->getContent(), true);
 
-            $uuid = Uuid::v4();
             $ip = $data['ip'];
+
+            $user = $this->userRepository->findOneBy(['ip' => $ip]) ?? new User();
+
+            $uuid = Uuid::v4();
 
             $user->setIp($ip)
                 ->setPassword($this->passwordHasher->hashPassword(
@@ -51,7 +52,7 @@ class UserController extends BaseController
             $this->logRepository->save($log, true);
 
 
-            return $this->json($user->getKey());
+            return $this->json($uuid);
         } catch(\Throwable $e) {
             return $this->failure($e->getMessage() ?? 'Une erreur est survenue');
         }
