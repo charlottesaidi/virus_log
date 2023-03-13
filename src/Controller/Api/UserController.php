@@ -49,7 +49,7 @@ class UserController extends BaseController
             $log = (new Log)
                 ->setIp($ip);
 
-            if(array_key_exists('infectedFiles', $data)) $log->setIp($data['infectedFiles']);
+            if(array_key_exists('infectedFiles', $data)) $log->setNumberInfectedFile($data['infectedFiles']);
 
             $this->logRepository->save($log, true);
 

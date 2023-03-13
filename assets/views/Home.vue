@@ -87,6 +87,7 @@ export default defineComponent({
         call(token: string | null): void {
             HttpRequest.get('/logs', token)
                 .then((response: any) => {
+                    console.log(response.data)
                     this.payments = response.data.transactions
                     this.infectedFiles = response.data.logs
                     this.infectedTerminals = response.data.infectedTerminals
