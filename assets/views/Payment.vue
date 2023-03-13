@@ -2,16 +2,18 @@
     <div class="form_page">
         <div class="title">
             <h1 class="title-label large text-center">
-                Thank you pour les sous ! <br/>
-                <small v-if="transaction">Il nous faut {{ transaction.amount }} €</small>
+                <p v-if="message.success" class="card-success">
+                    {{ message.success }}
+                </p>
+                <p v-else>
+                    Donne les thunes fréro <br/>
+                    <small v-if="transaction">Il nous faut {{ transaction.amount }} €</small>
+                </p>
             </h1>
         </div>
         <div class="card w-60">
             <p v-if="message.error" class="card-error">
                 {{ message.error }}
-            </p>
-            <p v-if="message.success" class="card-success">
-                {{ message.success }}
             </p>
 
             <Loader v-if="isLoading || isSubmitted"/>

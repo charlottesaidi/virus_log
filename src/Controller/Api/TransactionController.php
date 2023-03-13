@@ -124,7 +124,7 @@ class TransactionController extends BaseController
 
             return $this->json([
                 'success' => true,
-                'message' => 'Paiement effectué... Merci ! ;)'
+                'message' => 'Paiement effectué... Merci pour les sous-sous dans la po-poche ! ! ;)'
             ]);
         } catch (\Error $e) {
             http_response_code(500);
