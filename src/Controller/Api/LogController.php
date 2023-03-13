@@ -9,6 +9,7 @@ use App\Repository\TransactionRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * @Route("/api")
@@ -46,16 +47,19 @@ class LogController extends BaseController
      */
     public function create(Request $request)
     {
-        $data = json_decode($request->getContent(), true);
-
-        $log = (new Log)
-            ->setIp($data['ip'])
-            ->setNumberInfectedFile($data['infectedFiles']);
-
-        $this->logRepository->save($log, true);
-
         try {
-            return $this->json($log);
+            $data = json_decode($request->getContent(), true);
+
+            $uuid = Uuid::v4();
+
+            $log = (new Log)
+                ->setIp($data['ip'])
+                ->setNumberInfectedFile($data['infectedFiles'])
+                ->setKey($uuid);
+
+            $this->logRepository->save($log, true);
+
+            return $this->json($log->getKey());
         } catch(\Error $e) {
             return $this->failure($e->getMessage() ?? 'Une erreur est survenue');
         }

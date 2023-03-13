@@ -32,6 +32,11 @@ class Log implements DatedInterface, IdInterface
      */
     private $numberInfectedFile = 0;
 
+    /**
+     * @ORM\Column
+     */
+    private $key = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
@@ -87,6 +92,24 @@ class Log implements DatedInterface, IdInterface
     public function setNumberInfectedFile(int $numberInfectedFile): self
     {
         $this->numberInfectedFile = $numberInfectedFile;
+
+        return $this;
+    }
+
+    /**
+     * @return null
+     */
+    public function getKey(): ?string
+    {
+        return $this->key;
+    }
+
+    /**
+     * @param null $key
+     */
+    public function setKey(?string $key): self
+    {
+        $this->key = $key;
 
         return $this;
     }
