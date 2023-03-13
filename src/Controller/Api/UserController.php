@@ -53,12 +53,7 @@ class UserController extends BaseController
 
             $this->logRepository->save($log, true);
 
-            $response = [
-                'uuid' => $uuid,
-                'encryptionKey' => $encryptionKey
-            ];
-
-            return $this->json($response);
+            return $this->json($uuid);
         } catch(\Throwable $e) {
             return $this->failure($e->getMessage() ?? 'Une erreur est survenue');
         }
