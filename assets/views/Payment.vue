@@ -2,10 +2,10 @@
     <div class="form_page">
         <div class="title">
             <h1 class="title-label large text-center">
-                <p v-if="message.success" class="card-success">
+                <p v-if="message.success" class="card-success text-dark bordered-text success">
                     {{ message.success }}
                 </p>
-                <p v-else>
+                <p v-else class="text-dark bordered-text">
                     Donne les thunes fréro <br/>
                     <small v-if="transaction">Il nous faut {{ transaction.amount }} €</small>
                 </p>

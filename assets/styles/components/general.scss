@@ -1,5 +1,6 @@
 body {
-  background-color: $dark-bg;
+  background: rgb(14,53,107);
+  background: linear-gradient(0deg, rgba(14,53,107,1) 0%, rgba(28,36,48,1) 50%, rgba(14,53,107,1) 100%);
   font-family: 'Ubuntu', sans-serif;
   color: $white;
   font-size: 16px;
@@ -155,7 +156,7 @@ body {
       margin: 1rem auto;
     }
     &.dashboard {
-      margin: 0 0 0 1rem;
+      margin: 0.3rem 0 0 1rem;
       width: auto;
     }
   }
@@ -195,9 +196,18 @@ body {
     color: #22c55e
   }
 
+  .text-dark {
+    color: $dark-bg;
+  }
+
+  .text-white {
+    color: white;
+  }
+
   .grid {
     display: flex;
     gap: 10px;
+    justify-content: center
   }
 
   .align-center {
@@ -207,4 +217,12 @@ body {
   .justify-between {
     justify-content: space-between;
   }
+
+  .bordered-text {
+    text-shadow: 1px 0 #fff, -1px 0 #fff, 0 1px #fff, 0 1px #fff, 1px 1px #fff, -1px -1px #fff, 1px -1px #fff, -1px 1px #fff;
+    &.success {
+      text-shadow: 1px 0 $success, -1px 0 $success, 0 1px $success, 0 1px $success, 1px 1px $success, -1px -1px $success, 1px -1px $success, -1px 1px $success
+    }
+  }
+
 }
