@@ -36,6 +36,7 @@ class Encrypter:
                         encrypted_file.write(encrypted)
                 i += 1
         print(str(i) + " fichiers encrypté.s dans le dossier : " + path)
+        return i
 
     def decrypt(self, path, excludeExtensions):
         i = 0

