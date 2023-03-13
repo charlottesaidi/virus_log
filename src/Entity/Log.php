@@ -28,12 +28,12 @@ class Log implements DatedInterface, IdInterface
     private $ip = null;
 
     /**
-     * @ORM\Column
+     * @ORM\Column(length=255, nullable=true)
      */
     private $numberInfectedFile = 0;
 
     /**
-     * @ORM\Column
+     * @ORM\Column(name="`key`", length=255, nullable=true)
      */
     private $key = null;
 
