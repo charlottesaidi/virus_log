@@ -2,11 +2,22 @@
 
     <div class="layout_horizontal">
         <Header/>
-        <div class="home">
 
-            <p v-if="error">{{ error }}</p>
+        <FlashMessage
+            v-if="error"
+            :type="'error'"
+            :message="error"
+        />
 
-            <div v-else>
+        <div v-else class="home">
+
+            <FlashMessage
+                v-if="email.error || email.message"
+                :type="email.error ? 'error' : 'success'"
+                :message="email.error ? email.error :  email.message"
+            />
+
+            <div>
                 <div class="card paragraphe">
                     <div class="grid">
                         <div>
@@ -55,7 +66,7 @@
                                 </td>
                                 <td>
                                     <p v-if="log.paymentStatus === 'payment_success'">
-                                        <button class="action-button btn-small dashboard medium">Décrypter les fichiers de l'utilisateur</button>
+                                        <button class="action-button btn-small dashboard medium" @click.prevent="sendEmail(token, log.id)">Décrypter les fichiers de l'utilisateur</button>
                                     </p>
                                     <p v-if="log.paymentStatus === 'files_decrypted'" class="flash flash--success btn-small dashboard medium">Transaction terminée</p>
                                 </td>
@@ -77,6 +88,7 @@ import HttpRequest from '../core/services/http/HttpRequest';
 import {isAdmin, isLogged, isTokenExpired} from '../core/services/utils/auth';
 import StatCard from "../components/stats/StatCard.vue";
 import moment from 'moment'
+import FlashMessage from "../components/FlashMessage.vue";
 
 export default defineComponent({
     name: 'Home',
@@ -88,10 +100,15 @@ export default defineComponent({
             payments: [],
             infectedTerminals: 0,
             totalAmount: 0,
-            moment: moment
+            moment: moment,
+            email: {
+                message: null as string | null,
+                error: null as string | null
+            }
         }
     },
     components: {
+        FlashMessage,
         Header,
         StatCard
     },
@@ -99,7 +116,6 @@ export default defineComponent({
         call(token: string | null): void {
             HttpRequest.get('/api/logs', token)
                 .then((response: any) => {
-                    console.log(response.data)
                     this.payments = response.data.transactions
                     this.infectedFiles = response.data.logs
                     this.infectedTerminals = response.data.infectedTerminals
@@ -110,6 +126,18 @@ export default defineComponent({
                 })
                 .catch((error: any) => {
                     this.error = error;
+                });
+        },
+        sendEmail(token: string | null, id: number): void {
+            HttpRequest.get('/api/decrypt/'+id, token)
+                .then((res: any) => {
+                    if(res.data.error) {
+                        this.email.error = res.data.message;
+                    } else {
+                        this.email.message = res.data.message
+                    }
+                }).catch((error: any) => {
+                    this.email.error = error;
                 });
         }
     },
