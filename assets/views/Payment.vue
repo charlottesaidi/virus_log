@@ -12,9 +12,10 @@
             </h1>
         </div>
         <div class="card w-60">
-            <p v-if="message.error" class="card-error">
-                {{ message.error }}
-            </p>
+            <FlashMessage
+                type="error"
+                :message=" message.error"
+            />
 
             <Loader v-if="isLoading || isSubmitted"/>
 
@@ -36,6 +37,7 @@ import {env} from "../env";
 import Loader from "../components/Loader.vue";
 import {localeToCountryCode} from "../core/services/utils/string";
 import HttpRequest from "../core/services/http/HttpRequest";
+import FlashMessage from "../components/FlashMessage.vue";
 
 export default defineComponent({
     name: 'Home',
@@ -58,6 +60,7 @@ export default defineComponent({
         }
     },
     components: {
+        FlashMessage,
         Loader
     },
     created() {

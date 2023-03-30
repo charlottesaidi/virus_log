@@ -68,7 +68,7 @@ class TransactionRepository extends ServiceEntityRepository
 
     public function countAllTransactionAmount()
     {
-        return $query = $this->createQueryBuilder('t')
+        return $this->createQueryBuilder('t')
             ->select('COALESCE(SUM(t.amount), 0)')
             ->where('t.paymentStatus IN (:statuses)')
             ->setParameter('statuses', [Transaction::TRANSACTION_STATUS_PAYMENT_SUCCESS, Transaction::TRANSACTION_USER_FILE_DECRYPTED])
