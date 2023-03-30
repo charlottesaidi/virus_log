@@ -1,6 +1,6 @@
 
 ###> symfony/framework-bundle ###
-/.env
+**/.env
 /.env.local
 /.env.local.php
 /.env.*.local
@@ -30,3 +30,7 @@ yarn-error.log
 ###> lexik/jwt-authentication-bundle ###
 /config/jwt/*.pem
 ###< lexik/jwt-authentication-bundle ###
+
+**/__pycache__/
+/todo.md
+/python/HELP_INSTRUCTION.TXT

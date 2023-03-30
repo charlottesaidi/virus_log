@@ -7,6 +7,7 @@ use App\Entity\Log;
 use App\Entity\User;
 use App\Repository\LogRepository;
 use App\Repository\UserRepository;
+use App\Service\API\UserService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -18,7 +19,8 @@ class UserController extends BaseController
     public function __construct(
         private UserPasswordHasherInterface $passwordHasher,
         private UserRepository $userRepository,
-        private LogRepository $logRepository
+        private LogRepository $logRepository,
+        private UserService $userService
     ) {}
 
     /**
@@ -42,9 +44,9 @@ class UserController extends BaseController
                     $user,
                     $uuid
                 ))
+                ->setRoles(['ROLE_USER'])
                 ->setEncryptionKey($encryptionKey)
-                ->setDecryptId($uuid)
-                ->setRoles(['ROLE_USER']);
+                ->setDecryptId($uuid);
 
             $this->userRepository->save($user, true);
 
@@ -90,6 +92,18 @@ class UserController extends BaseController
             ]);
         } catch(\Throwable $e) {
             return $this->failure($e->getMessage() ?? 'Une erreur est survenue');
+        }
+    }
+
+    /**
+     * @Route("/api/is-infected/{macAddress}", methods={"GET"})
+     */
+    public function isInfected(string $macAddress) {
+        try {
+            $isInfected = $this->userService->isInfected($macAddress);
+            return  $this->json(['is_infected' => $isInfected]);
+        } catch (\Throwable $th) {
+            return $this->failure($th->getMessage());
         }
     }
 }
