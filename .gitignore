@@ -34,3 +34,7 @@ yarn-error.log
 **/__pycache__/
 /todo.md
 /python/HELP_INSTRUCTION.TXT
+/python/build/
+/python/dist/
+/python/*.spec
+/python/env.py
