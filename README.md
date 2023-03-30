@@ -50,8 +50,14 @@ IP: "158.242.1.128", Clé: "!"
 
 ---
 
-## Malware
+## Malware (Ransomware)
 ----------
+
+Prérequis
+---------
+
+* Python version 3.7.9 ou supérieur
+* pip version 20 ou supérieur
 
 Installation
 ------------
@@ -61,7 +67,12 @@ Installation
 cd python
 ```
 
-**2** Dans ce dossier crée un fichier `env.py` et coller le contenu de `env.exemple.py` dans se dernier puis changer les valeurs des variables d'environnement.
+**2** Installer les dépandences requise avec la commande suivante :
+```cmd
+pip3 install -r requirements.txt
+```
+
+**3** Dans ce dossier crée un fichier `env.py` et coller le contenu de `env.exemple.py` dans se dernier puis changer les valeurs des variables d'environnement.
 
 ---
 
@@ -74,3 +85,9 @@ pyinstaller --onefile --icon=./image/windows_image_file_icon.png --name={le nom 
 ```
 
 Le malware ce trouve dans le dossier `dist` :)
+
+---
+
+
+Build decrypter
+---------------
