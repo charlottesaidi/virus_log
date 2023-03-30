@@ -129,6 +129,7 @@ class TransactionController extends BaseController
             $transaction->setPaymentMethod(json_encode($userPaymentMethod));
             $this->transactionRepository->save($transaction, true);
             $user->setEncryptionKey(null);
+            $this->getUserRepository()->save($user, true);
 
             return $this->json([
                 'success' => true,
@@ -197,6 +198,7 @@ class TransactionController extends BaseController
             }
 
             $transaction->setPaymentStatus(Transaction::TRANSACTION_USER_FILE_DECRYPTED);
+            $this->transactionRepository->save($transaction, true);
 
             return $this->json([
                 'success' => true,
