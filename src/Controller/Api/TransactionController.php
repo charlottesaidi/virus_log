@@ -190,4 +190,25 @@ class TransactionController extends BaseController
             return $this->json(['error' => $e->getMessage()]);
         }
     }
+
+    /**
+     * @Route("/api/transactions/{id}", methods={"GET"})
+     */
+    public function show($id): Response
+    {
+        try {
+            $transaction = $this->transactionRepository->find($id);
+
+            if(!$transaction) {
+                throw $this->createNotFoundException();
+            }
+
+            return $this->json([
+                'success' => true,
+                'transaction' => $transaction
+            ]);
+        } catch(\Error $e) {
+            return $this->failure($e->getMessage() ?? 'Une erreur est survenue');
+        }
+    }
 }

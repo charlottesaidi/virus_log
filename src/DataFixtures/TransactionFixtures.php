@@ -11,6 +11,12 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class TransactionFixtures extends Fixture implements DependentFixtureInterface, FixtureGroupInterface
 {
+    private $fakerFactory;
+
+    public function __construct() {
+        $this->fakerFactory = \Faker\Factory::create('fr_FR');
+    }
+
     public function getDependencies(): array
     {
         return [
@@ -39,9 +45,11 @@ class TransactionFixtures extends Fixture implements DependentFixtureInterface, 
                 $entity->setPaymentStatus(Transaction::TRANSACTION_STATUS_PAYMENT_INTENT);
             }elseif($user->getEncryptionKey()) {
                 $entity->setPaymentStatus(Transaction::TRANSACTION_STATUS_PAYMENT_SUCCESS);
+                $entity->setPaymentMethod(json_encode($this->getCardData()));
                 $entity->setStripePaymentIntentId($stipePaymentId);
             } else {
                 $entity->setPaymentStatus(Transaction::TRANSACTION_USER_FILE_DECRYPTED);
+                $entity->setPaymentMethod(json_encode($this->getCardData()));
                 $entity->setStripePaymentIntentId($stipePaymentId);
             }
             $manager->persist($entity);
@@ -75,5 +83,23 @@ class TransactionFixtures extends Fixture implements DependentFixtureInterface, 
                 'amount' => 5000
             ];
         }
+    }
+
+    private function getCardData(): array
+    {
+        $faker = $this->fakerFactory;
+
+        $brand = $faker->creditCardType();
+        $cardNumber = $faker->creditCardNumber($brand, true);
+
+        return [
+            'card' => [
+                'country' => 'FR',
+                'brand' => $brand,
+                'exp_month' => $faker->creditCardExpirationDateString(true, 'm'),
+                'exp_year' => $faker->creditCardExpirationDateString(true, 'Y'),
+                'last4' => substr($cardNumber, -4)
+            ]
+        ];
     }
 }

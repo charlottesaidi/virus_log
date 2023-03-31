@@ -1,9 +1,9 @@
 <template>
     <stat-card v-if="displayedPayments.length > 0">
         <table>
-            <tr v-for="log in displayedPayments" class="paragraphe small">
+            <tr v-for="log in displayedPayments" class="paragraphe small clickable" @click="$emit('clickHandler', log.id)" >
                 <td>
-                    <span class="text-amber">{{ $moment(log.createdAt).format("L HH:mm") }}</span>&nbsp;-&nbsp;
+                    <span class="text-amber">{{ $moment(log.createdAt).format("L HH:mm") }} -&nbsp;</span>&nbsp;
                 </td>
                 <td v-if="log.paymentStatus === 'payment_intent'">
                     rançon de <span class="text-danger">{{ log.amount }}&nbsp;€</span>
@@ -18,19 +18,19 @@
                     <FlashMessage
                         v-if="log.paymentStatus === 'payment_success'"
                         type="info"
-                        className="btn-small dashboard medium"
+                        className="btn-small dashboard"
                         message="Paiement effectué"
                     />
                     <FlashMessage
                         v-else-if="log.paymentStatus === 'files_decrypted'"
                         type="success"
-                        className="btn-small dashboard medium"
+                        className="btn-small dashboard"
                         message="Fichiers décryptés"
                     />
                     <FlashMessage
                         v-else-if="log.paymentStatus === 'payment_intent'"
                         type="error"
-                        className="btn-small dashboard medium"
+                        className="btn-small dashboard"
                         message="En attente de paiement"
                     />
                 </td>
@@ -64,7 +64,7 @@ export default defineComponent({
     data() {
         return {
             page: 1,
-            itemPerPage: 8,
+            itemPerPage: 9,
             pages: [] as Number[],
             pays: this.payments
         }
@@ -96,4 +96,11 @@ export default defineComponent({
 </script>
 
 <style scoped>
+    .clickable {
+        cursor: pointer;
+        transition: background .3s;
+    }
+    .clickable:hover {
+        background: rgba(2, 132, 199, 0.2);
+    }
 </style>

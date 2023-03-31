@@ -11,6 +11,18 @@ body {
     text-decoration: none;
   }
 
+  table {
+    display: block;
+    max-width: fit-content;
+    margin: 0;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  td {
+    white-space: nowrap;
+  }
+
   .w-40 {
     width: 40%;
   }
@@ -176,6 +188,18 @@ body {
       line-height: 1.2;
     }
   }
+  .card--payment-detail {
+    .title {
+      &.m-0 {
+        width: 80%;
+        margin: 0 auto;
+      }
+    }
+    .grid {
+      padding: 1rem;
+      align-items: center;
+    }
+  }
 
   .paragraphe {
     line-height: 1.5;
@@ -249,7 +273,14 @@ body {
   .grid {
     display: flex;
     gap: 10px;
-    justify-content: center
+    justify-content: center;
+    flex-wrap: wrap;
+    &.grid-between {
+      justify-content: space-between;
+    }
+    &.grid-start {
+      justify-content: flex-start;
+    }
   }
 
   .align-center {
@@ -267,4 +298,53 @@ body {
     }
   }
 
+}
+
+@media screen and (max-width: 830px) {
+  body {
+    .layout_horizontal {
+      padding: 0 0.5rem;
+    }
+    header {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1;
+      background: $dark-bg;
+    }
+    .stat-card {
+      width: 100%;
+      padding: 2rem 0;
+    }
+    .card-statistics {
+      margin-right: 0!important;
+      margin-left: 0!important;
+      margin-bottom: 1rem;
+    }
+    .title {
+      margin: 2rem auto 0 auto;
+      width: 100%;
+      &.mt-0 {
+        margin: 0
+      }
+      .title-label {
+        width: 100%;
+        overflow: hidden
+      }
+    }
+    .home {
+      padding: 0;
+      margin-bottom: 4rem;
+    }
+    .grid {
+      gap: 0
+    }
+    .medium {
+      font-size: inherit
+    }
+    .w-40 {
+      width: 80%
+    }
+  }
 }

