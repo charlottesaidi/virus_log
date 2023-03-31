@@ -2,14 +2,14 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Log;
+use App\Entity\Transaction;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
-class LogFixtures extends Fixture implements DependentFixtureInterface, FixtureGroupInterface
+class TransactionFixtures extends Fixture implements DependentFixtureInterface, FixtureGroupInterface
 {
     public function getDependencies(): array
     {
@@ -27,9 +27,17 @@ class LogFixtures extends Fixture implements DependentFixtureInterface, FixtureG
     {
         $i = 1;
         foreach ($this->getData() as $data) {
-            $entity = $this->createLog($data);
+            $entity = $this->createTransaction($data);
             $user = $this->getReference(UserFixtures::getUserReference((string) $i));
-            $entity->setIp($user->getIp());
+            $entity->setUser($user);
+            $entity->setLabel('Paiement depuis '.$user->getMacAddress());
+            if(!$user->getEmail()) {
+                $entity->setPaymentStatus(Transaction::TRANSACTION_STATUS_PAYMENT_INTENT);
+            }elseif($user->getEncryptionKey()) {
+                $entity->setPaymentStatus(Transaction::TRANSACTION_STATUS_PAYMENT_SUCCESS);
+            } else {
+                $entity->setPaymentStatus(Transaction::TRANSACTION_USER_FILE_DECRYPTED);
+            }
             $manager->persist($entity);
             ++$i;
         }
@@ -37,9 +45,9 @@ class LogFixtures extends Fixture implements DependentFixtureInterface, FixtureG
         $manager->flush();
     }
 
-    private function createLog(array $data): Log
+    private function createTransaction(array $data): Transaction
     {
-        $entity = new Log();
+        $entity = new Transaction();
 
         $propertyAccessor = PropertyAccess::createPropertyAccessorBuilder()
             ->disableExceptionOnInvalidPropertyPath()
@@ -56,9 +64,13 @@ class LogFixtures extends Fixture implements DependentFixtureInterface, FixtureG
 
     private function getData(): iterable
     {
+        $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        $stipePaymentId = substr( str_shuffle( $chars ), 0, 24 );
+
         for ($i = 1; $i < 100; ++$i) {
             yield [
-                'numberInfectedFile' => rand(100, 8000)
+                'amount' => 5000,
+                'stripePaymentIntentId' => 'pi_'.$stipePaymentId,
             ];
         }
     }

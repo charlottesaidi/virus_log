@@ -48,7 +48,8 @@ body {
   }
 
   .flash {
-    padding: .8rem 2rem !important;
+    font: inherit;
+    padding: .8rem 2rem;
     font-weight: 500;
     background-color: $success-transparent;
     color: $white;
@@ -69,6 +70,17 @@ body {
     &.flash--info {
       background-color: $primary-transparent;
       border-left: 2px solid $primary;
+    }
+    &.flash--warning {
+      background-color: $amber-transparent;
+      border-left: 2px solid $amber;
+    }
+    .flash-button {
+      display: block;
+      padding: 0;
+      color: inherit;
+      font-size: inherit;
+      line-height: inherit;
     }
   }
 
@@ -167,14 +179,9 @@ body {
 
   .action-button {
     font: inherit;
-    padding: .8rem 2rem;
-    width: 100%;
-    font-weight: 500;
-    background-color: $primary-transparent;
-    color: $white;
     border: none;
-    border-left: 2px solid $primary;
     cursor: pointer;
+    color: $white;
     transition: opacity .3s;
     &:focus {
       outline: 0;
@@ -187,7 +194,7 @@ body {
       margin: 1rem auto;
     }
     &.dashboard {
-      margin: 0.3rem 0 0 1rem;
+      margin: 0.2rem 0 0.2rem 1rem;
       width: auto;
     }
   }

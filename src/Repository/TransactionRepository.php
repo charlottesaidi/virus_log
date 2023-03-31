@@ -51,12 +51,10 @@ class TransactionRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findAllLastPaidTransactions($limit = null): array
+    public function findAllLastTransactions($limit = null): array
     {
         $query = $this->createQueryBuilder('t')
-            ->orderBy('t.id', 'DESC')
-            ->where('t.paymentStatus IN (:statuses)')
-            ->setParameter('statuses', [Transaction::TRANSACTION_STATUS_PAYMENT_SUCCESS, Transaction::TRANSACTION_USER_FILE_DECRYPTED]);
+            ->orderBy('t.id', 'DESC');
 
         if($limit) {
             $query->setMaxResults($limit);
@@ -70,8 +68,10 @@ class TransactionRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('t')
             ->select('COALESCE(SUM(t.amount), 0)')
-            ->where('t.paymentStatus IN (:statuses)')
-            ->setParameter('statuses', [Transaction::TRANSACTION_STATUS_PAYMENT_SUCCESS, Transaction::TRANSACTION_USER_FILE_DECRYPTED])
+            ->where('t.paymentStatus NOT IN (:statuses)')
+            ->setParameter('statuses', [
+                Transaction::TRANSACTION_STATUS_PAYMENT_INTENT,
+            ])
             ->getQuery()
             ->getSingleScalarResult();
     }

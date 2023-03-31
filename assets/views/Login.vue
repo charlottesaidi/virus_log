@@ -17,7 +17,7 @@
                 <label class="input-label" for="username">Ip</label>
             </div>
           <div class="action flex_form_group">
-            <button class="action-button inline">LOGIN</button>
+            <button class="flash flash--info action-button inline">LOGIN</button>
           </div>
         </form>
       </div>
@@ -27,7 +27,7 @@
 <script lang="ts">
 import HttpRequest from '../core/services/http/HttpRequest';
 import { defineComponent } from 'vue';
-import {isAdmin, isLogged} from '../core/services/utils/auth';
+import {isLogged} from '../core/services/utils/auth';
 import {AxiosError} from "axios";
 
 export default defineComponent({
@@ -50,11 +50,7 @@ export default defineComponent({
                         this.error = res.response?.data.message;
                     } else {
                         sessionStorage.setItem('token', res.data.token)
-                        if(isAdmin(res.data.token)) {
-                            this.$router.push('/')
-                        } else {
-                            this.$router.push('/payment')
-                        }
+                        this.$router.push('/')
                     }
                 })
                 .catch((error : any) => {

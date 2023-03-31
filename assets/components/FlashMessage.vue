@@ -10,12 +10,12 @@ export default {
     name: "FlashMessage",
     props: {
         type: String,
-        message: String
+        message: String,
+        className: String | null
     },
     data() {
         return {
-            className: String,
-            classType: String
+            classType: ''
         }
     },
     created() {
@@ -25,6 +25,9 @@ export default {
                 break;
             case 'success':
                 this.classType = 'flash--success'
+                break;
+            case 'warning':
+                this.classType = 'flash--warning'
                 break;
             default:
                 this.classType = 'flash--info'

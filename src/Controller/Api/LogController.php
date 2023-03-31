@@ -29,10 +29,9 @@ class LogController extends BaseController
     {
         try {
             $this->denyAccessUnlessGranted('ROLE_ADMIN');
-            $transactions = $this->transactionRepository->findAllLastPaidTransactions(30);
-            $logs = $this->logRepository->findAllLastLogs(30);
+            $transactions = $this->transactionRepository->findAllLastTransactions();
+            $logs = $this->logRepository->findAllLastLogs();
             $totalAmount = $this->transactionRepository->countAllTransactionAmount();
-
 
             return $this->json([
                 'transactions' => $transactions,

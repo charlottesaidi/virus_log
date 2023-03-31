@@ -36,9 +36,7 @@ Accéder à l'URL donnée (<https://localhost:8000> par défaut).
 
 **3** Utilisateurs tests :
 #### admins
-IP: "127.0.0.1", Clé: "!" 
-#### utilisateur lambda
-IP: "158.242.1.128", Clé: "!"  
+IP: "127.0.0.1", Clé: "!"  
 
 [1]: https://symfony.com/doc/current/best_practices.html
 [2]: https://symfony.com/doc/current/setup.html#technical-requirements

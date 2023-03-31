@@ -12,7 +12,7 @@
                     <input type="text" class="input-field" v-model="user.email" placeholder="E-mail" required/>
                 </div>
                 <div class="action flex_form_group">
-                    <button class="action-button inline">SUBMIT</button>
+                    <button class="flash flash--info action-button inline">SUBMIT</button>
                 </div>
             </form>
             <div class="title title--caption">
@@ -36,6 +36,7 @@
 import { defineComponent } from 'vue';
 import HttpRequest from "../core/services/http/HttpRequest";
 import FlashMessage from "../components/FlashMessage.vue";
+import {AxiosError} from "axios/index";
 
 export default defineComponent({
     name: 'Signin',

@@ -1,0 +1,21 @@
+.pagination-wrapper {
+    margin-top: 1rem;
+    .pagination {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .page-item {
+            font-size: 14px;
+            text-transform: lowercase;
+            .page-link {
+                display: inline-block;
+                padding: 0.5rem;
+                border: 1px $primary solid;
+                background: $primary-transparent;
+                font-size: inherit;
+                color: $primary;
+                border-radius: 50%;
+            }
+        }
+    }
+}
