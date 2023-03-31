@@ -91,7 +91,6 @@ class UserController extends BaseController
 
             $isTransactionAlreadyPaid = $this->transactionRepository->findLastOneByUserAndStatus($user, [
                 Transaction::TRANSACTION_STATUS_PAYMENT_SUCCESS,
-                Transaction::TRANSACTION_USER_EMAIL_SENT,
                 Transaction::TRANSACTION_USER_FILE_DECRYPTED
             ]);
 

@@ -19,26 +19,19 @@
                         v-if="log.paymentStatus === 'payment_success'"
                         type="info"
                         className="btn-small dashboard medium"
-                    >
-                        <button class="flash-button" @click.prevent="$emit('clickHandler', log.id)">Décrypter les fichiers de l'utilisateur</button>
-                    </FlashMessage>
+                        message="Paiement effectué"
+                    />
                     <FlashMessage
                         v-else-if="log.paymentStatus === 'files_decrypted'"
                         type="success"
                         className="btn-small dashboard medium"
-                        message="Transaction terminée"
+                        message="Fichiers décryptés"
                     />
                     <FlashMessage
                         v-else-if="log.paymentStatus === 'payment_intent'"
                         type="error"
                         className="btn-small dashboard medium"
                         message="En attente de paiement"
-                    />
-                    <FlashMessage
-                        v-else-if="log.paymentStatus === 'email_sent'"
-                        type="warning"
-                        className="btn-small dashboard medium"
-                        message="Email envoyé..."
                     />
                 </td>
             </tr>
@@ -57,7 +50,6 @@ import {defineComponent} from 'vue';
 import StatCard from "./StatCard.vue";
 import Pagination from "../Pagination.vue";
 import FlashMessage from "../FlashMessage.vue";
-import {Transaction} from "../../core/models/transaction";
 
 export default defineComponent({
     name: "PaymentStat",

@@ -107,7 +107,6 @@ class TransactionController extends BaseController
                 throw $this->createNotFoundException();
             }
 
-            $transaction->setPaymentStatus(Transaction::TRANSACTION_STATUS_PAYMENT_SUCCESS);
             $transaction->setLabel('Paiement depuis '.$user->getIp());
 
             $payment_method = \Stripe\PaymentMethod::retrieve($payment_method_id);
@@ -131,37 +130,8 @@ class TransactionController extends BaseController
             $user->setEncryptionKey(null);
             $this->getUserRepository()->save($user, true);
 
-            return $this->json([
-                'success' => true,
-                'message' => 'Paiement effectué... Merci pour les sous-sous dans la po-poche ! ;)'
-            ]);
-        } catch (\Error $e) {
-            http_response_code(500);
-            return $this->json(['error' => $e->getMessage()]);
-        }
-    }
-
-    /**
-     * @Route("/api/send_decrypt_email/{id}", methods={"GET"})
-     */
-    public function sendDecryptEmail($id): Response
-    {
-        try {
-            $transaction = $this->transactionRepository->findOneBy(
-                [
-                    'id' => $id,
-                    'paymentStatus' => Transaction::TRANSACTION_STATUS_PAYMENT_SUCCESS
-                ]
-            );
-
-            if (null === $transaction) {
-                return $this->json([
-                    'error' => true,
-                    'message' => 'Cette transaction n\'existe pas ou n\'a pas été payée'
-                ]);
-            }
-
-            $user = $transaction->getUser();
+            $transaction->setPaymentStatus(Transaction::TRANSACTION_STATUS_PAYMENT_SUCCESS);
+            $this->transactionRepository->save($transaction, true);
 
             $this->mailer->send(
                 'gege@dec.com',
@@ -170,13 +140,11 @@ class TransactionController extends BaseController
                 'emails/decrypt_email.html.twig'
             );
 
-            $transaction->setPaymentStatus(Transaction::TRANSACTION_USER_EMAIL_SENT);
-            $this->transactionRepository->save($transaction, true);
-
             return $this->json([
-                'message' => 'L\'email contenant la clé de décryptage a été envoyé à '.$user->getEmail()
+                'success' => true,
+                'message' => 'Paiement effectué... Merci pour les sous-sous dans la po-poche ! Regarde tes mails ;)'
             ]);
-        } catch(\Error | TransportExceptionInterface $e) {
+        } catch (\Error $e) {
             http_response_code(500);
             return $this->json(['error' => $e->getMessage()]);
         }
@@ -185,7 +153,7 @@ class TransactionController extends BaseController
     /**
      * @Route("/decrypt_success/{macAddress}", methods={"GET"})
      */
-    public function decryptSuccess(Request $request, $macAddress): Response
+    public function decryptSuccess($macAddress): Response
     {
         try {
             $user = $this->getUserRepository()->findOneBy(['macAddress' => $macAddress]);
@@ -194,7 +162,7 @@ class TransactionController extends BaseController
                 throw $this->createNotFoundException();
             }
 
-            $transaction = $this->transactionRepository->findLastOneByUserAndStatus($user, [Transaction::TRANSACTION_USER_EMAIL_SENT]);
+            $transaction = $this->transactionRepository->findLastOneByUserAndStatus($user, [Transaction::TRANSACTION_STATUS_PAYMENT_SUCCESS]);
 
             if (!$transaction) {
                 throw $this->createNotFoundException();
