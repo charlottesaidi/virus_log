@@ -144,7 +144,7 @@ class TransactionController extends BaseController
                 'success' => true,
                 'message' => 'Paiement effectué... Merci pour les sous-sous dans la po-poche ! Regarde tes mails ;)'
             ]);
-        } catch (\Error $e) {
+        } catch (\Error | TransportExceptionInterface $e) {
             http_response_code(500);
             return $this->json(['error' => $e->getMessage()]);
         }
