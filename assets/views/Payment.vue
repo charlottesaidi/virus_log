@@ -12,10 +12,9 @@
             </h1>
         </div>
         <div class="card w-60">
-            <FlashMessage
-                type="error"
-                :message=" message.error"
-            />
+            <p v-if="message.error" class="my-3">
+                <FlashMessage type="error" :message="message.error" />
+            </p>
 
             <Loader v-if="isLoading || isSubmitted"/>
 
@@ -24,7 +23,7 @@
                     <!-- Stripe injecte l'élément de formulaire ici -->
                 </div>
                 <div class="flex_form_group">
-                    <button class="action-button inline" type="submit">Pay</button>
+                    <button class="flash flash--info action-button inline" type="submit">Pay</button>
                 </div>
             </form>
         </div>
@@ -68,11 +67,11 @@ export default defineComponent({
             this.$router.push('/signin')
         }
 
-        HttpRequest.get('stripe_create?decryptId='+this.token, null).then(response => {
+        HttpRequest.get('/stripe_create?decryptId='+this.token, null).then(response => {
             this.stripe = Stripe(env.STRIPE_PUBLIC_KEY);
 
             const options = {
-                clientSecret: response.data.clientSecret,
+                clientSecret: response.clientSecret,
                 appearance: this.appearance
             }
 
@@ -89,7 +88,7 @@ export default defineComponent({
             });
             this.isLoading = false;
             paymentElement.mount('#payment-element');
-            this.transaction = response.data.transaction
+            this.transaction = response.transaction
         }).catch(error => {
             this.message.error = error.response.data.message ?? error.response.data.detail
         })
@@ -115,8 +114,8 @@ export default defineComponent({
             });
 
             if (error === undefined) {
-                HttpRequest.get('payment_success?pm=' + paymentIntent.payment_method + '&decryptId='+this.token, null).then((res) => {
-                    this.message.success = res.data.message
+                HttpRequest.get('/payment_success?pm=' + paymentIntent.payment_method + '&decryptId='+this.token, null).then((res) => {
+                    this.message.success = res.message
                 }).catch((err) => {
                     this.message.error = err.response.data.message ?? err.response.data.detail
                 })

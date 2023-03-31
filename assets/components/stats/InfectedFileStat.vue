@@ -34,7 +34,7 @@ export default defineComponent({
         StatCard,
     },
     props: {
-        infectedFiles: { type: Array, default: () => null },
+        infectedFiles: [],
     },
     data() {
         return {
@@ -49,10 +49,10 @@ export default defineComponent({
             let perPage = this.itemPerPage;
             let from = (page * perPage) - perPage;
             let to = (page * perPage);
-            return this.infectedFiles.slice(from, to);
+            return (this.infectedFiles || []).slice(from, to);
         },
         setPages(): void {
-            let numberOfPages = Math.ceil(this.infectedFiles.length / this.itemPerPage);
+            let numberOfPages = Math.ceil((this.infectedFiles || []).length / this.itemPerPage);
             for (let index = 1; index <= numberOfPages; index++) {
                 this.pages.push(index);
             }

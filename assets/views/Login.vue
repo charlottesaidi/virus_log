@@ -5,8 +5,8 @@
       </div>
       <div class="card w-40">
         <form class="card-form" @submit.prevent="submit(user)">
-          <p v-if="error" class="card-error">
-            {{ error }}
+          <p v-if="error" class="my-3">
+              <FlashMessage type="error" :message="error" />
           </p>
           <div class="input">
             <input type="password" class="input-field" v-model="user.password" required/>
@@ -28,10 +28,11 @@
 import HttpRequest from '../core/services/http/HttpRequest';
 import { defineComponent } from 'vue';
 import {isLogged} from '../core/services/utils/auth';
-import {AxiosError} from "axios";
+import FlashMessage from "../components/FlashMessage.vue";
 
 export default defineComponent({
     name: 'Login',
+    components: {FlashMessage},
     data() {
         return {
             token: isLogged(),
@@ -44,12 +45,12 @@ export default defineComponent({
     },
     methods: {
         submit(user: any): void {
-            HttpRequest.post('/api/login_check', user)
-                .then((res: any) => {
-                    if(res instanceof AxiosError) {
-                        this.error = res.response?.data.message;
+            HttpRequest.login('/api/login_check', user)
+                .then((res) => {
+                    if(res.code) {
+                        this.error = res.message;
                     } else {
-                        sessionStorage.setItem('token', res.data.token)
+                        sessionStorage.setItem('token', res.token)
                         this.$router.push('/')
                     }
                 })

@@ -57,6 +57,7 @@ import {defineComponent} from 'vue';
 import StatCard from "./StatCard.vue";
 import Pagination from "../Pagination.vue";
 import FlashMessage from "../FlashMessage.vue";
+import {Transaction} from "../../core/models/transaction";
 
 export default defineComponent({
     name: "PaymentStat",
@@ -66,13 +67,14 @@ export default defineComponent({
         StatCard,
     },
     props: {
-        payments: { type: Array, default: () => null }
+        payments: []
     },
     data() {
         return {
             page: 1,
             itemPerPage: 8,
-            pages: [] as Number[]
+            pages: [] as Number[],
+            pays: this.payments
         }
     },
     methods: {
@@ -81,10 +83,10 @@ export default defineComponent({
             let perPage = this.itemPerPage;
             let from = (page * perPage) - perPage;
             let to = (page * perPage);
-            return this.payments.slice(from, to);
+            return (this.payments || []).slice(from, to);
         },
         setPages(): void {
-            let numberOfPages = Math.ceil(this.payments.length / this.itemPerPage);
+            let numberOfPages = Math.ceil((this.payments || []).length / this.itemPerPage);
             for (let index = 1; index <= numberOfPages; index++) {
                 this.pages.push(index);
             }

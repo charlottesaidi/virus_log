@@ -1,9 +1,9 @@
 import { env } from "../../../env";
-import axios from "axios";
 
-export default axios.create({
-  baseURL: env.baseApiUrl,
-  headers: {
-    "Content-type": "application/json"
-  }
-});
+interface HttpConfig {
+  url: string;
+}
+
+export const config: HttpConfig = {
+  url: env.baseApiUrl
+}

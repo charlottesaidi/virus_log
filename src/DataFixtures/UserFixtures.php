@@ -91,9 +91,9 @@ class UserFixtures extends Fixture implements FixtureGroupInterface
     private function getData(): iterable
     {
         $faker = $this->fakerFactory;
-        $uuid = Uuid::v4();
 
         for ($i = 0; $i < 100; ++$i) {
+            $uuid = Uuid::v4();
             $email = match ($i % 5) {
                 0 => null,
                 3, 1, 2, 4 => $faker->email()

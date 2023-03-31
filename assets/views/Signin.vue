@@ -2,8 +2,8 @@
     <div class="form_page pt-2">
         <div class="card w-40">
             <form class="card-form" @submit.prevent="submit(user)">
-                <p v-if="error" class="card-error">
-                    {{ error }}
+                <p v-if="error" class="my-3">
+                    <FlashMessage type="error" :message="error" />
                 </p>
                 <div class="input">
                     <input type="text" class="input-field" v-model="user.decryptId" placeholder="Decrypt ID" required/>
@@ -36,7 +36,6 @@
 import { defineComponent } from 'vue';
 import HttpRequest from "../core/services/http/HttpRequest";
 import FlashMessage from "../components/FlashMessage.vue";
-import {AxiosError} from "axios/index";
 
 export default defineComponent({
     name: 'Signin',
@@ -52,13 +51,13 @@ export default defineComponent({
     },
     methods: {
         submit(user: any): void {
-            HttpRequest.post('/signin', user)
+            HttpRequest.login('/signin', user)
                 .then((response: any) => {
-                    if(response.data.success) {
-                        sessionStorage.setItem('decryptId', response.data.decryptId)
+                    if(response.success) {
+                        sessionStorage.setItem('decryptId', response.token)
                         this.$router.push('/payment')
                     } else {
-                        this.error = response.data.data
+                        this.error = response.message
                     }
                 })
                 .catch((error : any) => {
