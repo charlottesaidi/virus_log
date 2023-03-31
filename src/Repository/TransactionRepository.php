@@ -40,6 +40,16 @@ class TransactionRepository extends ServiceEntityRepository
         }
     }
 
+    public function findLastOneByUser($user): ?Transaction
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
+
     public function findLastOneByUserAndStatus($user, $statuses): ?Transaction
     {
         return $this->createQueryBuilder('t')

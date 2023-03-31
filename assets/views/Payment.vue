@@ -1,5 +1,8 @@
 <template>
-    <div class="form_page">
+    <p v-if="message.error" class="card w-60">
+        <FlashMessage type="error" :message="message.error" />
+    </p>
+    <div v-else class="form_page">
         <div class="title">
             <h1 class="title-label large text-center">
                 <p v-if="message.success" class="card-success text-dark bordered-text success">
@@ -12,10 +15,6 @@
             </h1>
         </div>
         <div class="card w-60">
-            <p v-if="message.error" class="my-3">
-                <FlashMessage type="error" :message="message.error" />
-            </p>
-
             <Loader v-if="isLoading || isSubmitted"/>
 
             <form id="payment-form" class="card-form" @submit.prevent="handleSubmit">
@@ -68,27 +67,31 @@ export default defineComponent({
         }
 
         HttpRequest.get('/stripe_create?decryptId='+this.token, null).then(response => {
-            this.stripe = Stripe(env.STRIPE_PUBLIC_KEY);
+            if(response.error) {
+                this.message.error = response.message;
+            } else {
+                this.stripe = Stripe(env.STRIPE_PUBLIC_KEY);
 
-            const options = {
-                clientSecret: response.clientSecret,
-                appearance: this.appearance
-            }
+                const options = {
+                    clientSecret: response.clientSecret,
+                    appearance: this.appearance
+                }
 
-            this.elements = this.stripe.elements(options);
-            const paymentElement = this.elements.create('payment', {
-                fields: {
-                    billingDetails: {
-                        address: {
-                            country: 'never',
-                            postalCode: 'never',
+                this.elements = this.stripe.elements(options);
+                const paymentElement = this.elements.create('payment', {
+                    fields: {
+                        billingDetails: {
+                            address: {
+                                country: 'never',
+                                postalCode: 'never',
+                            }
                         }
                     }
-                }
-            });
-            this.isLoading = false;
-            paymentElement.mount('#payment-element');
-            this.transaction = response.transaction
+                });
+                this.isLoading = false;
+                paymentElement.mount('#payment-element');
+                this.transaction = response.transaction
+            }
         }).catch(error => {
             this.message.error = error.response.data.message ?? error.response.data.detail
         })
