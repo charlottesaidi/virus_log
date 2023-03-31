@@ -170,6 +170,9 @@ class TransactionController extends BaseController
                 'emails/decrypt_email.html.twig'
             );
 
+            $transaction->setPaymentStatus(Transaction::TRANSACTION_USER_EMAIL_SENT);
+            $this->transactionRepository->save($transaction, true);
+
             return $this->json([
                 'message' => 'L\'email contenant la clé de décryptage a été envoyé à '.$user->getEmail()
             ]);
@@ -191,7 +194,7 @@ class TransactionController extends BaseController
                 throw $this->createNotFoundException();
             }
 
-            $transaction = $this->transactionRepository->findLastOneByUserAndStatus($user, [Transaction::TRANSACTION_STATUS_PAYMENT_SUCCESS]);
+            $transaction = $this->transactionRepository->findLastOneByUserAndStatus($user, [Transaction::TRANSACTION_USER_EMAIL_SENT]);
 
             if (!$transaction) {
                 throw $this->createNotFoundException();
