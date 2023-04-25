@@ -1,6 +1,6 @@
 <template>
 
-    <div class="layout_horizontal">
+    <div v-if="token" class="layout_horizontal">
         <Header/>
 
         <FlashMessage
