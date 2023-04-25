@@ -81,9 +81,12 @@ class TransactionController extends BaseController
 
             return $this->json($output);
         } catch (\Error $e) {
-            http_response_code(500);
-
-            return $this->json(['error' => $e->getMessage()]);
+            return $this->failure(
+                [
+                    'error' => $e->getMessage() ?? 'Une erreur est survenue'
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
     }
 
@@ -152,8 +155,12 @@ class TransactionController extends BaseController
                 'message' => 'Paiement effectué... Merci pour les sous-sous dans la po-poche ! Regarde tes mails ;)'
             ]);
         } catch (\Error | TransportExceptionInterface $e) {
-            http_response_code(500);
-            return $this->json(['error' => $e->getMessage()]);
+            return $this->failure(
+                [
+                    'error' => $e->getMessage() ?? 'Une erreur est survenue'
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
     }
 
@@ -186,8 +193,12 @@ class TransactionController extends BaseController
                 'message' => 'Fichiers décryptés et transaction modifiée'
             ]);
         } catch(\Error $e) {
-            http_response_code(500);
-            return $this->json(['error' => $e->getMessage()]);
+            return $this->failure(
+                [
+                   'error' => $e->getMessage() ?? 'Une erreur est survenue'
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
     }
 
@@ -208,7 +219,7 @@ class TransactionController extends BaseController
                 'transaction' => $transaction
             ]);
         } catch(\Error $e) {
-            return $this->failure($e->getMessage() ?? 'Une erreur est survenue');
+            return $this->failure($e->getMessage() ?? 'Une erreur est survenue', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }
