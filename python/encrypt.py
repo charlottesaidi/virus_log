@@ -1,5 +1,5 @@
 from encrypter import Encrypter
-import os
+from device_infos import get_user_path
 
 
 class Encrypt:
@@ -7,7 +7,7 @@ class Encrypt:
     _exclude_extensions : tuple
 
     def __init__(self) -> None:
-        self._path = os.path.expanduser( '~' ).replace('\\', '//') + '//Documents'
+        self._path = get_user_path()
         self._exclude_extensions = ('.ini')
 
 

@@ -2,6 +2,7 @@
 
 namespace App\Service\API;
 
+use App\Repository\TransactionRepository;
 use App\Repository\UserRepository;
 
 class UserService {
@@ -10,9 +11,15 @@ class UserService {
      */
     private UserRepository $userRepository;
 
-    public function __construct(UserRepository $userRepository)
+    /**
+     * @var TransactionRepository
+     */
+    private TransactionRepository $transactionRepository;
+
+    public function __construct(UserRepository $userRepository, TransactionRepository $transactionRepository)
     {
         $this->userRepository = $userRepository;
+        $this->transactionRepository = $transactionRepository;
     }
 
     /**
@@ -29,5 +36,21 @@ class UserService {
             return true;
         }
         return false;
+    }
+
+    public function isPaied(string $decryptKey): bool {
+        $user = $this->userRepository->findOneBy(['encryptionKey' => $decryptKey]);
+        if (!$user) {
+            return false;
+        }
+        $transaction = $this->transactionRepository->findOneBy(['user' => $user]);
+        if (!$transaction) {
+            return false;
+        }
+        if ($transaction->getPaymentStatus() === 'payment_success') {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

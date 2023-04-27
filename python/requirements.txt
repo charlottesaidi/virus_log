@@ -1,3 +1,5 @@
 cryptography==39.0.2
 requests==2.28.2
 Pillow==9.4.0
+pyinstaller==5.10.1
+customtkinter==5.1.2

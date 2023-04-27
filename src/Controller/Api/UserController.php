@@ -136,4 +136,15 @@ class UserController extends BaseController
             return $this->failure($th->getMessage());
         }
     }
+
+    /**
+     * @Route("/api/is-paied/{decryptKey}", methods={"GET"})
+     */
+    public function isPaied(string $decryptKey) {
+        try {
+            return  $this->json(['is_paied' => $this->userService->isPaied($decryptKey)]);
+        } catch (\Throwable $th) {
+            return $this->failure($th->getMessage());
+        }
+    }
 }
