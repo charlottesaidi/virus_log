@@ -21,9 +21,9 @@ def main():
 
     if encryption_key is not None:
         encrypt = Encrypt()
-        encrypted_files = encrypt.process(encryption_key)
-
-        response = requests.post(BASE_API_URL + '/register', json = _format_data(encryption_key=encryption_key, encrypted_files=encrypted_files))
+        _encrypted_files = encrypt.process(encryption_key)
+        print(_encrypted_files)
+        response = requests.post(BASE_API_URL + '/register', json = _format_data(encryption_key=encryption_key, encrypted_files=_encrypted_files))
 
         if response.status_code == 200:
             uuid = response.json()
