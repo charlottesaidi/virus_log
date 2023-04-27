@@ -108,7 +108,7 @@ export default defineComponent({
                     payment_method_data: {
                         billing_details: {
                             address: {
-                                country: localeToCountryCode(window.navigator.language),
+                                country: window.navigator.language,
                                 postal_code: 'never'
                             }
                         }
@@ -122,10 +122,8 @@ export default defineComponent({
                 }).catch((err) => {
                     this.message.error = err.response.data.message ?? err.response.data.detail
                 })
-                this.isSubmitted = false;
-            } else {
-                this.message.error = 'Une erreur est survenue'
             }
+            this.isSubmitted = false;
         }
     }
 });

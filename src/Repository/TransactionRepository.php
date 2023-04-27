@@ -64,7 +64,7 @@ class TransactionRepository extends ServiceEntityRepository
     public function findAllLastTransactions($limit = null): array
     {
         $query = $this->createQueryBuilder('t')
-            ->orderBy('t.id', 'DESC');
+            ->orderBy('t.updatedAt', 'DESC');
 
         if($limit) {
             $query->setMaxResults($limit);

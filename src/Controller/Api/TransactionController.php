@@ -71,6 +71,7 @@ class TransactionController extends BaseController
             $transaction->setPaymentStatus(Transaction::TRANSACTION_STATUS_PAYMENT_INTENT);
             $transaction->setStripePaymentIntentId($paymentIntent->id);
             $transaction->setStripeCustomerId($paymentIntent->customer);
+            $transaction->setUpdatedAt(new \DateTime());
 
             $this->transactionRepository->save($transaction, true);
 
@@ -138,6 +139,7 @@ class TransactionController extends BaseController
             $this->transactionRepository->save($transaction, true);
 
             $transaction->setPaymentStatus(Transaction::TRANSACTION_STATUS_PAYMENT_SUCCESS);
+            $transaction->setUpdatedAt(new \DateTime());
             $this->transactionRepository->save($transaction, true);
 
             $this->mailer->send(
