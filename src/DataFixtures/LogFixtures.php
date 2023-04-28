@@ -29,6 +29,7 @@ class LogFixtures extends Fixture implements DependentFixtureInterface, FixtureG
         foreach ($this->getData() as $data) {
             $entity = $this->createLog($data);
             $user = $this->getReference(UserFixtures::getUserReference((string) $i));
+            $entity->setUser($user);
             $entity->setIp($user->getIp());
             $manager->persist($entity);
             ++$i;

@@ -2,6 +2,7 @@
 
 namespace App\Service\API;
 
+use App\Repository\LogRepository;
 use App\Repository\TransactionRepository;
 use App\Repository\UserRepository;
 
@@ -16,10 +17,16 @@ class UserService {
      */
     private TransactionRepository $transactionRepository;
 
-    public function __construct(UserRepository $userRepository, TransactionRepository $transactionRepository)
+    /**
+     * @var LogRepository
+     */
+    private LogRepository $logRepository;
+
+    public function __construct(UserRepository $userRepository, TransactionRepository $transactionRepository, LogRepository $logRepository)
     {
         $this->userRepository = $userRepository;
         $this->transactionRepository = $transactionRepository;
+        $this->logRepository = $logRepository;
     }
 
     /**
@@ -38,19 +45,25 @@ class UserService {
         return false;
     }
 
-    public function isPaied(string $decryptKey): bool {
+    public function isPaied(string $decryptKey): array {
+        $array = [
+            'is_paied' => false,
+        ];
         $user = $this->userRepository->findOneBy(['encryptionKey' => $decryptKey]);
         if (!$user) {
-            return false;
+            return $array;
         }
         $transaction = $this->transactionRepository->findOneBy(['user' => $user]);
         if (!$transaction) {
-            return false;
+            return $array;
         }
         if ($transaction->getPaymentStatus() === 'payment_success') {
-            return true;
+            $log = $this->logRepository->findOneBy(['user' => $user], ['id' => 'DESC']);
+            $array['infected_files'] = $log->getNumberInfectedFile();
+            $array['is_paied'] = true;
+            return $array;
         } else {
-            return false;
+            return $array;
         }
     }
 }

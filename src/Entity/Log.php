@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\User;
 use App\Entity\Common\DatedInterface;
 use App\Entity\Common\DatedTrait;
 use App\Entity\Common\IdInterface;
@@ -16,6 +17,12 @@ class Log implements DatedInterface, IdInterface
 {
     use DatedTrait;
     use IdTrait;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class)
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $user;
 
     /**
      * @ORM\Column(length=255, nullable=true)
@@ -35,6 +42,24 @@ class Log implements DatedInterface, IdInterface
     public function __construct()
     {
         $this->createdAt = new \DateTime();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param mixed $user
+     */
+    public function setUser($user): self
+    {
+        $this->user = $user;
+
+        return $this;
     }
 
     /**
