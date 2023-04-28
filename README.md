@@ -21,7 +21,7 @@ cd virus_log/
 composer install
 yarn install
 ```
-**2** Jwt pour la connexion
+**2** Générer les clés Jwt pour la connexion
 ```cmd
 symfony console lexik:jwt:generate-keypair
 ```
