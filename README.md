@@ -14,11 +14,30 @@ Prérequis
 Installation
 ------------
 
+**1** Installer le projet
 ```cmd
 git clone https://github.com/charlottesaidi/virus_log.git
 cd virus_log/
 composer install
 yarn install
+```
+**2** Générer les clés Jwt pour la connexion
+```cmd
+symfony console lexik:jwt:generate-keypair
+```
+
+**3** Configurer les clés dans le .env
+```cmd
+JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem
+JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem
+JWT_PASSPHRASE=
+```
+
+**4** Créer la base de données et lancer les fixtures
+```cmd
+symfony console doctrine:database:create
+symfony console doctrine:migrations:migrate
+symfony console doctrine:fixtures:load
 ```
 
 Utilisation
