@@ -89,3 +89,8 @@ Le malware ce trouve dans le dossier `dist` :)
 
 Build decrypter
 ---------------
+
+**1** Exécuter le commande suivante :
+```cmd
+pyinstaller --onefile --windowed --collect-data="C:\\Users\\vboxuser\\AppData\Local\\Programs\\Python\\Python37\\Lib\\site-packages\\customtkinter" --icon=./image/nfs.png --name=test decrypter.py
+```
